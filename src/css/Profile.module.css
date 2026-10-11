@@ -1,23 +1,96 @@
 .page {
 	max-width: 720px;
 	margin: 0 auto;
+	padding: 32px 24px;
+}
+
+.page h1 {
+	margin: 0 0 4px;
+	color: #1b2a4a;
+}
+
+.email {
+	color: #6b7a99;
+	font-size: 14px;
+	margin: 0 0 24px;
+}
+
+.adminCard {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 18px 20px;
+	background: linear-gradient(135deg, #1b2a4a 0%, #2a3c63 100%);
+	color: #fff;
+	border-radius: 12px;
+	text-decoration: none;
+	margin-bottom: 32px;
+	transition:
+		transform 0.15s,
+		box-shadow 0.15s;
+}
+
+.adminCard:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(27, 42, 74, 0.2);
+}
+
+.adminCard strong {
+	display: block;
+	font-size: 16px;
+	margin-bottom: 4px;
+	color: #ffcc00;
+}
+
+.adminCard span {
+	font-size: 13px;
+	color: #cdd6e8;
+}
+
+.arrow {
+	font-size: 22px;
+	color: #ffcc00 !important;
+}
+
+.section {
+	background: #fff;
 	padding: 24px;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(27, 42, 74, 0.06);
+}
+
+.sectionHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 16px;
+}
+
+.sectionHeader h2 {
+	margin: 0;
+	font-size: 18px;
+	color: #1b2a4a;
 }
 
 .addBtn {
-	display: inline-block;
 	background: #ffcc00;
 	color: #1b2a4a;
 	padding: 8px 16px;
 	border-radius: 6px;
 	text-decoration: none;
 	font-weight: 600;
-	margin-bottom: 20px;
+	font-size: 14px;
+}
+
+.empty {
+	color: #6b7a99;
+	font-size: 14px;
 }
 
 .list {
 	list-style: none;
 	padding: 0;
+	margin: 0;
 }
 
 .item {
@@ -28,9 +101,18 @@
 	border-bottom: 1px solid #eef1f7;
 }
 
+.item:last-child {
+	border-bottom: none;
+}
+
 .item a {
 	color: #1b2a4a;
 	text-decoration: none;
+	font-weight: 500;
+}
+
+.item a:hover {
+	color: #2a4a8a;
 }
 
 .status {

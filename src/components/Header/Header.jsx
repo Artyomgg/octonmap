@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import styles from '../../css/Header.module.css'
 
 export default function Header() {
-	const { user, signOut } = useAuth()
+	const { user, isAdmin, signOut } = useAuth()
 	const navigate = useNavigate()
 
 	const handleLogout = async () => {
@@ -24,6 +24,7 @@ export default function Header() {
 				<NavLink to='/map' className={({ isActive }) => (isActive ? styles.active : '')}>
 					Карта
 				</NavLink>
+
 				{user && (
 					<>
 						<NavLink to='/add' className={({ isActive }) => (isActive ? styles.active : '')}>
@@ -33,6 +34,15 @@ export default function Header() {
 							Профиль
 						</NavLink>
 					</>
+				)}
+
+				{isAdmin && (
+					<NavLink
+						to='/admin'
+						className={({ isActive }) => `${styles.adminLink} ${isActive ? styles.active : ''}`}
+					>
+						⚙ Админка
+					</NavLink>
 				)}
 			</nav>
 
