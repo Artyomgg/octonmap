@@ -14,7 +14,8 @@ export default function Header() {
 	return (
 		<header className={styles.header}>
 			<Link to='/' className={styles.logo}>
-				🇧🇾 Октябрьский — Помним
+				<img src='/img/favicon.png' alt='Логотип' className={styles.logoIcon} />
+				<span>Октябрьский — Помним</span>
 			</Link>
 
 			<nav className={styles.nav}>

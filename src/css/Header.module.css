@@ -98,3 +98,26 @@
 	margin-right: 6px;
 	vertical-align: middle;
 }
+
+.logo {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 18px;
+	font-weight: 700;
+	color: #fff;
+	text-decoration: none;
+	transition: opacity 0.2s;
+}
+
+.logo:hover {
+	opacity: 0.85;
+}
+
+.logoIcon {
+	width: 32px;
+	height: 32px;
+	object-fit: contain;
+	display: block;
+	flex-shrink: 0;
+}

@@ -84,3 +84,27 @@ export async function uploadPhoto(file, userId) {
 
 	return data.publicUrl
 }
+
+// Обновить место (админ)
+export async function updatePlace(id, updates) {
+	const { data, error } = await supabase
+		.from('places')
+		.update(updates)
+		.eq('id', id)
+		.select()
+		.single()
+
+	if (error) throw error
+	return data
+}
+
+// Получить все места (для админа — включая pending и rejected)
+export async function fetchAllPlaces() {
+	const { data, error } = await supabase
+		.from('places')
+		.select('*')
+		.order('created_at', { ascending: false })
+
+	if (error) throw error
+	return data
+}

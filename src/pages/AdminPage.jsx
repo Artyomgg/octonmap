@@ -1,12 +1,19 @@
 import { useEffect, useState } from 'react'
+import EditPlaceModal from '../components/Admin/EditPlaceModal'
 import { useAuth } from '../context/AuthContext'
 import styles from '../css/Admin.module.css'
 import { fetchAllProfiles, setUserRole } from '../lib/admins'
-import { fetchPendingPlaces, updatePlaceStatus } from '../lib/places'
+import { deletePlace, fetchAllPlaces, updatePlaceStatus } from '../lib/places'
+
+const STATUS_LABEL = {
+	pending: 'На модерации',
+	approved: 'Опубликовано',
+	rejected: 'Отклонено',
+}
 
 export default function AdminPage() {
 	const { user } = useAuth()
-	const [tab, setTab] = useState('places') // 'places' | 'users'
+	const [tab, setTab] = useState('places')
 
 	return (
 		<div className={styles.page}>
@@ -17,7 +24,7 @@ export default function AdminPage() {
 					className={tab === 'places' ? styles.tabActive : styles.tab}
 					onClick={() => setTab('places')}
 				>
-					Модерация мест
+					Места
 				</button>
 				<button
 					className={tab === 'users' ? styles.tabActive : styles.tab}
@@ -35,10 +42,12 @@ export default function AdminPage() {
 function PlacesTab() {
 	const [places, setPlaces] = useState([])
 	const [loading, setLoading] = useState(true)
+	const [filter, setFilter] = useState('all')
+	const [editing, setEditing] = useState(null) // место, которое редактируем
 
 	const load = () => {
 		setLoading(true)
-		fetchPendingPlaces()
+		fetchAllPlaces()
 			.then(setPlaces)
 			.catch(console.error)
 			.finally(() => setLoading(false))
@@ -46,35 +55,93 @@ function PlacesTab() {
 
 	useEffect(load, [])
 
+	const filtered = filter === 'all' ? places : places.filter(p => p.status === filter)
+
 	const moderate = async (id, status) => {
 		await updatePlaceStatus(id, status)
-		setPlaces(prev => prev.filter(p => p.id !== id))
+		setPlaces(prev => prev.map(p => (p.id === id ? { ...p, status } : p)))
+	}
+
+	const remove = async (id, title) => {
+		if (!confirm(`Удалить место «${title}»? Действие необратимо.`)) return
+		try {
+			await deletePlace(id)
+			setPlaces(prev => prev.filter(p => p.id !== id))
+		} catch (e) {
+			alert('Ошибка удаления: ' + e.message)
+		}
 	}
 
 	if (loading) return <p>Загрузка...</p>
-	if (places.length === 0) return <p>Нет мест на модерации 🎉</p>
 
 	return (
-		<div className={styles.grid}>
-			{places.map(p => (
-				<div key={p.id} className={styles.card}>
-					{p.photo_url && <img src={p.photo_url} alt={p.title} />}
-					<h3>{p.title}</h3>
-					<span className={styles.category}>{p.category}</span>
-					<p className={styles.addr}>{p.address}</p>
-					<p className={styles.desc}>{p.description}</p>
+		<>
+			<div className={styles.filters}>
+				{['all', 'pending', 'approved', 'rejected'].map(s => (
+					<button
+						key={s}
+						className={filter === s ? styles.filterActive : styles.filter}
+						onClick={() => setFilter(s)}
+					>
+						{s === 'all' ? 'Все' : STATUS_LABEL[s]}
+						<span className={styles.count}>
+							{s === 'all' ? places.length : places.filter(p => p.status === s).length}
+						</span>
+					</button>
+				))}
+			</div>
 
-					<div className={styles.actions}>
-						<button className={styles.approve} onClick={() => moderate(p.id, 'approved')}>
-							✓ Одобрить
-						</button>
-						<button className={styles.reject} onClick={() => moderate(p.id, 'rejected')}>
-							✕ Отклонить
-						</button>
-					</div>
+			{filtered.length === 0 ? (
+				<p>Ничего нет в этой категории</p>
+			) : (
+				<div className={styles.grid}>
+					{filtered.map(p => (
+						<div key={p.id} className={styles.card}>
+							{p.photo_url ? (
+								<img src={p.photo_url} alt={p.title} />
+							) : (
+								<div className={styles.noPhoto}>Нет фото</div>
+							)}
+
+							<div className={styles.cardBody}>
+								<h3>{p.title}</h3>
+								<div className={styles.meta}>
+									<span className={styles.category}>{p.category}</span>
+									<span className={`${styles.status} ${styles[p.status]}`}>
+										{STATUS_LABEL[p.status]}
+									</span>
+								</div>
+								{p.address && <p className={styles.addr}>{p.address}</p>}
+								{p.description && <p className={styles.desc}>{p.description}</p>}
+							</div>
+
+							<div className={styles.actions}>
+								{p.status !== 'approved' && (
+									<button className={styles.approve} onClick={() => moderate(p.id, 'approved')}>
+										✓ Одобрить
+									</button>
+								)}
+								{p.status !== 'rejected' && (
+									<button className={styles.reject} onClick={() => moderate(p.id, 'rejected')}>
+										✕ Отклонить
+									</button>
+								)}
+								<button className={styles.edit} onClick={() => setEditing(p)}>
+									✎ Изменить
+								</button>
+								<button className={styles.delete} onClick={() => remove(p.id, p.title)}>
+									🗑 Удалить
+								</button>
+							</div>
+						</div>
+					))}
 				</div>
-			))}
-		</div>
+			)}
+
+			{editing && (
+				<EditPlaceModal place={editing} onClose={() => setEditing(null)} onSaved={load} />
+			)}
+		</>
 	)
 }
 
