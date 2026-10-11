@@ -20,3 +20,36 @@ a {
 button {
 	font-family: inherit;
 }
+
+/* Красивый скроллбар */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: #f4f6fa;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #cdd6e8;
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #8fa1c1;
+}
+
+/* Плавные переходы при смене роутов */
+* {
+	-webkit-tap-highlight-color: transparent;
+}
+
+button {
+	font-family: inherit;
+}
+
+img {
+	max-width: 100%;
+	display: block;
+}
