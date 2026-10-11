@@ -80,3 +80,73 @@
 .mapArea {
 	flex: 1;
 }
+
+.searchBlock {
+	background: #f4f6fa;
+	padding: 12px 14px;
+	border-radius: 8px;
+	margin-bottom: 16px;
+	border: 1px solid #e0e6f0;
+}
+
+.searchLabel {
+	display: block;
+	font-size: 13px;
+	color: #4a5e85;
+	font-weight: 500;
+	margin-bottom: 6px;
+}
+
+.searchRow {
+	display: flex;
+	gap: 8px;
+	margin-top: 6px;
+}
+
+.searchRow input {
+	flex: 1;
+	padding: 8px 10px;
+	border: 1px solid #cdd6e8;
+	border-radius: 6px;
+	font-size: 14px;
+	font-family: inherit;
+	margin: 0;
+}
+
+.searchBtn {
+	padding: 8px 14px;
+	background: #1b2a4a;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 16px;
+	transition: background 0.15s;
+}
+
+.searchBtn:hover:not(:disabled) {
+	background: #2a3c63;
+}
+
+.searchBtn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.hintOk {
+	color: #1a7a3a;
+	font-size: 12px;
+	margin: 8px 0 0;
+}
+
+.hintWarn {
+	color: #8a6500;
+	font-size: 12px;
+	margin: 8px 0 0;
+}
+
+.hintErr {
+	color: #a30000;
+	font-size: 12px;
+	margin: 8px 0 0;
+}

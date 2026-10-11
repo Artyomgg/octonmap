@@ -12,8 +12,9 @@ export default function Home() {
 						<span className={styles.accent}>Октябрьского района</span>
 					</h1>
 					<p className={styles.lead}>
-						Интерактивная карта памятников, мемориальных досок и мест воинской славы. Добавляйте
-						истории, которых нет в официальных реестрах, и сохраняйте память вместе.
+						Интерактивная карта памятников, исторических мест, архитектуры и достопримечательностей
+						района. Добавляйте места, которых нет в официальных реестрах, и сохраняйте историю
+						вместе.
 					</p>
 					<div className={styles.actions}>
 						<Link to='/map' className={styles.btnPrimary}>
@@ -31,7 +32,7 @@ export default function Home() {
 					<span className={styles.icon}>🗺</span>
 					<h3>Интерактивная карта</h3>
 					<p>
-						Все памятные места района на одной карте. Фильтруйте по категориям, находите ближайшие к
+						Все значимые места района на одной карте. Фильтруйте по категориям, находите ближайшие к
 						дому.
 					</p>
 				</div>
@@ -44,20 +45,20 @@ export default function Home() {
 					</p>
 				</div>
 				<div className={styles.feature}>
-					<span className={styles.icon}>🕯</span>
-					<h3>Живая память</h3>
-					<p>Фото, истории, координаты — всё в одном месте. Связь поколений в цифровом формате.</p>
+					<span className={styles.icon}>🏛</span>
+					<h3>История и культура</h3>
+					<p>Памятники, архитектура, мемориалы, скверы и знаковые места — всё в одном месте.</p>
 				</div>
 			</section>
 
 			<section className={styles.stats}>
 				<div>
-					<strong>80</strong>
-					<span>лет Победы</span>
+					<strong>80+</strong>
+					<span>лет истории</span>
 				</div>
 				<div>
-					<strong>1941–1945</strong>
-					<span>годы войны</span>
+					<strong>10+</strong>
+					<span>категорий мест</span>
 				</div>
 				<div>
 					<strong>∞</strong>
@@ -67,7 +68,7 @@ export default function Home() {
 
 			<section className={styles.cta}>
 				<h2>Знаете место, которого нет на карте?</h2>
-				<p>Добавьте его — и оно станет частью общей памяти района.</p>
+				<p>Добавьте его — и оно станет частью общей истории района.</p>
 				<Link to='/add' className={styles.btnPrimary}>
 					Добавить место
 				</Link>
