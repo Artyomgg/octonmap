@@ -1,0 +1,83 @@
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 24px;
+	height: 70px;
+	background: #1b2a4a;
+	color: #fff;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+}
+
+.logo {
+	font-size: 18px;
+	font-weight: 700;
+	color: #fff;
+	text-decoration: none;
+}
+
+.nav {
+	display: flex;
+	gap: 20px;
+}
+
+.nav a {
+	color: #cdd6e8;
+	text-decoration: none;
+	font-size: 15px;
+	transition: color 0.2s;
+}
+
+.nav a:hover {
+	color: #fff;
+}
+
+.active {
+	color: #ffcc00 !important;
+	font-weight: 600;
+}
+
+.auth {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.email {
+	font-size: 13px;
+	color: #8fa1c1;
+}
+
+.btn,
+.btnPrimary {
+	padding: 8px 16px;
+	border-radius: 6px;
+	font-size: 14px;
+	text-decoration: none;
+	cursor: pointer;
+	border: none;
+	transition: 0.2s;
+}
+
+.btn {
+	background: transparent;
+	color: #fff;
+	border: 1px solid #4a5e85;
+}
+
+.btn:hover {
+	background: #2a3c63;
+}
+
+.btnPrimary {
+	background: #ffcc00;
+	color: #1b2a4a;
+	font-weight: 600;
+}
+
+.btnPrimary:hover {
+	background: #ffd633;
+}

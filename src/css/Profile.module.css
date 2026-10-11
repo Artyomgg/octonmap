@@ -1,0 +1,55 @@
+.page {
+	max-width: 720px;
+	margin: 0 auto;
+	padding: 24px;
+}
+
+.addBtn {
+	display: inline-block;
+	background: #ffcc00;
+	color: #1b2a4a;
+	padding: 8px 16px;
+	border-radius: 6px;
+	text-decoration: none;
+	font-weight: 600;
+	margin-bottom: 20px;
+}
+
+.list {
+	list-style: none;
+	padding: 0;
+}
+
+.item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 0;
+	border-bottom: 1px solid #eef1f7;
+}
+
+.item a {
+	color: #1b2a4a;
+	text-decoration: none;
+}
+
+.status {
+	font-size: 12px;
+	padding: 4px 10px;
+	border-radius: 12px;
+}
+
+.pending {
+	background: #fff3cd;
+	color: #8a6500;
+}
+
+.approved {
+	background: #d4f4dd;
+	color: #1a7a3a;
+}
+
+.rejected {
+	background: #ffe0e0;
+	color: #a30000;
+}

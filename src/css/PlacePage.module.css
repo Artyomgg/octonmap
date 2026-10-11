@@ -1,0 +1,52 @@
+.page {
+	max-width: 760px;
+	margin: 0 auto;
+	padding: 24px;
+}
+
+.back {
+	display: inline-block;
+	color: #4a5e85;
+	text-decoration: none;
+	margin-bottom: 16px;
+}
+
+.photo {
+	width: 100%;
+	max-height: 420px;
+	object-fit: cover;
+	border-radius: 10px;
+	margin-bottom: 20px;
+}
+
+.page h1 {
+	margin: 0 0 8px;
+}
+
+.badge {
+	display: inline-block;
+	background: #eef1f7;
+	color: #2a4a8a;
+	padding: 4px 10px;
+	border-radius: 12px;
+	font-size: 13px;
+	margin-bottom: 16px;
+}
+
+.address {
+	color: #4a5e85;
+}
+
+.description {
+	line-height: 1.6;
+	white-space: pre-line;
+}
+
+.coords {
+	font-size: 13px;
+	color: #6b7a99;
+}
+
+.loading {
+	padding: 24px;
+}

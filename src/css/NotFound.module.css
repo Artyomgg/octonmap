@@ -1,0 +1,26 @@
+.page {
+	text-align: center;
+	padding: 100px 20px;
+}
+
+.page h1 {
+	font-size: 96px;
+	margin: 0;
+	color: #cdd6e8;
+}
+
+.page p {
+	color: #6b7a99;
+	font-size: 18px;
+	margin-bottom: 24px;
+}
+
+.btn {
+	display: inline-block;
+	padding: 12px 24px;
+	background: #1b2a4a;
+	color: #fff;
+	border-radius: 8px;
+	text-decoration: none;
+	font-weight: 600;
+}
