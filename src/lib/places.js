@@ -12,9 +12,17 @@ export async function fetchApprovedPlaces() {
 	return data
 }
 
-// Получить одно место
 export async function fetchPlaceById(id) {
+	console.log('🔍 [fetchPlaceById] ЗАПРОС id =', id)
+	console.log('🔍 [fetchPlaceById] тип id =', typeof id)
+
 	const { data, error } = await supabase.from('places').select('*').eq('id', id).single()
+
+	console.log('🔍 [fetchPlaceById] ERROR =', error)
+	console.log('🔍 [fetchPlaceById] DATA =', data)
+	console.log('🔍 [fetchPlaceById] DATA keys =', data ? Object.keys(data) : 'null')
+	console.log('🔍 [fetchPlaceById] photo_url =', data?.photo_url)
+	console.log('🔍 [fetchPlaceById] photo_url typeof =', typeof data?.photo_url)
 
 	if (error) throw error
 	return data

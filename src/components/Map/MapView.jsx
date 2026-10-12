@@ -56,7 +56,6 @@ function ClickHandler({ onMapClick }) {
 	return null
 }
 
-// Контроллер карты: связывает ref + перелетает при смене targetCoords
 function MapController({ mapRef, targetCoords }) {
 	const map = useMap()
 
@@ -80,7 +79,7 @@ export default function MapView({
 	mapRef,
 	activeId,
 	onMarkerClick,
-	targetCoords, // ← новые координаты для перелёта (из поиска по адресу)
+	targetCoords,
 }) {
 	const [geoJsonData, setGeoJsonData] = useState(null)
 
@@ -124,11 +123,24 @@ export default function MapView({
 							}}
 						>
 							<Popup>
-								<strong>{place.title}</strong>
-								<br />
-								<span className={styles.category}>{place.category}</span>
-								<br />
-								<Link to={`/place/${place.id}`}>Подробнее →</Link>
+								<div className={styles.popup}>
+									{place.photo_url && (
+										<img
+											src={place.photo_url}
+											alt={place.title}
+											className={styles.popupImg}
+											onError={e => {
+												e.target.style.display = 'none'
+											}}
+										/>
+									)}
+									<strong className={styles.popupTitle}>{place.title}</strong>
+									<span className={styles.popupCat}>{place.category}</span>
+									{place.address && <span className={styles.popupAddr}>📍 {place.address}</span>}
+									<Link to={`/place/${place.id}`} className={styles.popupLink}>
+										Подробнее →
+									</Link>
+								</div>
 							</Popup>
 						</Marker>
 					)

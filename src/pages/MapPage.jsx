@@ -90,9 +90,23 @@ export default function MapPage() {
 								className={`${styles.item} ${activeId === p.id ? styles.itemActive : ''}`}
 							>
 								<button onClick={() => handleSelect(p)} className={styles.itemBtn}>
-									<strong>{p.title}</strong>
-									<span className={styles.cat}>{p.category}</span>
-									{p.address && <span className={styles.addr}>{p.address}</span>}
+									{p.photo_url ? (
+										<img
+											src={p.photo_url}
+											alt={p.title}
+											className={styles.thumb}
+											onError={e => {
+												e.target.style.display = 'none'
+											}}
+										/>
+									) : (
+										<div className={styles.thumbPlaceholder}>📍</div>
+									)}
+									<div className={styles.itemContent}>
+										<strong>{p.title}</strong>
+										<span className={styles.cat}>{p.category}</span>
+										{p.address && <span className={styles.addr}>{p.address}</span>}
+									</div>
 								</button>
 								<Link to={`/place/${p.id}`} className={styles.details}>
 									→

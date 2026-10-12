@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import styles from '../../css/Form.module.css'
 import { geocodeAddress } from '../../lib/geocode'
-import { createPlace, uploadPhoto } from '../../lib/places'
+import { createPlace } from '../../lib/places'
 import MapView from '../Map/MapView'
 
 const CATEGORIES = [
@@ -41,14 +41,13 @@ export default function PlaceForm({ onSuccess }) {
 		description: '',
 		address: '',
 		category: 'памятник',
+		photo_url: '',
 	})
 	const [point, setPoint] = useState(null)
-	const [photo, setPhoto] = useState(null)
-	const [preview, setPreview] = useState(null)
 	const [saving, setSaving] = useState(false)
 	const [error, setError] = useState('')
 
-	// 🔍 Поиск по адресу
+	// Поиск по адресу
 	const [searchQuery, setSearchQuery] = useState('')
 	const [searching, setSearching] = useState(false)
 	const [targetCoords, setTargetCoords] = useState(null)
@@ -58,13 +57,6 @@ export default function PlaceForm({ onSuccess }) {
 		setForm({ ...form, [e.target.name]: e.target.value })
 	}
 
-	const handlePhoto = e => {
-		const file = e.target.files[0]
-		if (!file) return
-		setPhoto(file)
-		setPreview(URL.createObjectURL(file))
-	}
-
 	const handleMapClick = latlng => {
 		if (!isInsideDistrict(latlng)) {
 			setError('Пожалуйста, выбирайте точки только в пределах Октябрьского района Минска')
@@ -72,13 +64,11 @@ export default function PlaceForm({ onSuccess }) {
 		}
 		setError('')
 		setPoint(latlng)
-		// Если пользователь вручную ткнул в карту — можно автозаполнить адрес
 		if (!form.address && searchQuery) {
 			setForm(f => ({ ...f, address: searchQuery }))
 		}
 	}
 
-	// 🔍 Поиск адреса
 	const handleSearch = async e => {
 		e.preventDefault()
 		if (!searchQuery.trim()) return
@@ -95,16 +85,11 @@ export default function PlaceForm({ onSuccess }) {
 				return
 			}
 
-			// Летим на найденную точку
 			setTargetCoords({ lat: result.lat, lng: result.lng })
 
-			// Если адрес в районе — сразу ставим точку
 			if (result.inDistrict) {
 				setPoint({ lat: result.lat, lng: result.lng })
-				setForm(f => ({
-					...f,
-					address: f.address || searchQuery,
-				}))
+				setForm(f => ({ ...f, address: f.address || searchQuery }))
 				setSearchHint('✓ Адрес найден в Октябрьском районе. Точка отмечена.')
 			} else {
 				setSearchHint(
@@ -129,16 +114,14 @@ export default function PlaceForm({ onSuccess }) {
 		try {
 			setSaving(true)
 
-			let photoUrl = null
-			if (photo) {
-				photoUrl = await uploadPhoto(photo, user.id)
-			}
-
 			await createPlace({
-				...form,
+				title: form.title,
+				description: form.description,
+				address: form.address,
+				category: form.category,
+				photo_url: form.photo_url.trim() || null,
 				lat: point.lat,
 				lng: point.lng,
-				photo_url: photoUrl,
 				author_id: user.id,
 				status: 'pending',
 			})
@@ -157,7 +140,6 @@ export default function PlaceForm({ onSuccess }) {
 			<form className={styles.form} onSubmit={handleSubmit}>
 				<h2>Новое место</h2>
 
-				{/* 🔍 Блок поиска по адресу */}
 				<div className={styles.searchBlock}>
 					<label className={styles.searchLabel}>
 						Найти адрес на карте
@@ -242,11 +224,29 @@ export default function PlaceForm({ onSuccess }) {
 				</label>
 
 				<label>
-					Фото
-					<input type='file' accept='image/*' onChange={handlePhoto} />
+					Ссылка на фото
+					<input
+						name='photo_url'
+						type='url'
+						value={form.photo_url}
+						onChange={handleChange}
+						placeholder='https://example.com/photo.jpg'
+					/>
 				</label>
 
-				{preview && <img src={preview} alt='preview' className={styles.preview} />}
+				{form.photo_url && (
+					<img
+						src={form.photo_url}
+						alt='preview'
+						className={styles.preview}
+						onError={e => {
+							e.target.style.display = 'none'
+						}}
+						onLoad={e => {
+							e.target.style.display = 'block'
+						}}
+					/>
+				)}
 
 				<div className={styles.coords}>
 					{point

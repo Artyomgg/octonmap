@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import styles from '../../css/Modal.module.css'
-import { updatePlace, uploadPhoto } from '../../lib/places'
+import { updatePlace } from '../../lib/places'
 
 const CATEGORIES = [
 	'памятник',
@@ -32,20 +32,11 @@ export default function EditPlaceModal({ place, onClose, onSaved }) {
 		lng: place.lng,
 		photo_url: place.photo_url || '',
 	})
-	const [photo, setPhoto] = useState(null)
-	const [preview, setPreview] = useState(place.photo_url || null)
 	const [saving, setSaving] = useState(false)
 	const [error, setError] = useState('')
 
 	const handleChange = e => {
 		setForm({ ...form, [e.target.name]: e.target.value })
-	}
-
-	const handlePhoto = e => {
-		const file = e.target.files[0]
-		if (!file) return
-		setPhoto(file)
-		setPreview(URL.createObjectURL(file))
 	}
 
 	const handleSubmit = async e => {
@@ -54,11 +45,6 @@ export default function EditPlaceModal({ place, onClose, onSaved }) {
 		setSaving(true)
 
 		try {
-			let photoUrl = form.photo_url
-			if (photo) {
-				photoUrl = await uploadPhoto(photo, place.author_id || 'admin')
-			}
-
 			await updatePlace(place.id, {
 				title: form.title,
 				description: form.description,
@@ -67,7 +53,7 @@ export default function EditPlaceModal({ place, onClose, onSaved }) {
 				status: form.status,
 				lat: parseFloat(form.lat),
 				lng: parseFloat(form.lng),
-				photo_url: photoUrl,
+				photo_url: form.photo_url.trim() || null,
 			})
 
 			onSaved?.()
@@ -163,11 +149,29 @@ export default function EditPlaceModal({ place, onClose, onSaved }) {
 					</label>
 
 					<label>
-						Фото (если не менять — останется старое)
-						<input type='file' accept='image/*' onChange={handlePhoto} />
+						Ссылка на фото
+						<input
+							name='photo_url'
+							type='url'
+							value={form.photo_url}
+							onChange={handleChange}
+							placeholder='https://example.com/photo.jpg'
+						/>
 					</label>
 
-					{preview && <img src={preview} alt='preview' className={styles.preview} />}
+					{form.photo_url && (
+						<img
+							src={form.photo_url}
+							alt='preview'
+							className={styles.preview}
+							onError={e => {
+								e.target.style.display = 'none'
+							}}
+							onLoad={e => {
+								e.target.style.display = 'block'
+							}}
+						/>
+					)}
 
 					<div className={styles.actions}>
 						<button type='button' onClick={onClose} className={styles.cancel}>
