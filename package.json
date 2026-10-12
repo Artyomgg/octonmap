@@ -12,6 +12,8 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
     "@types/geojson": "^7946.0.16",
+    "docx": "^9.10.0",
+    "file-saver": "^2.0.5",
     "leaflet": "^1.9.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
