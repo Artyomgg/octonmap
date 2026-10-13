@@ -1,11 +1,10 @@
-// 🔁 Свой прокси на Vercel (папка /api/groq.js)
-// Локально: vercel dev. На проде: работает автоматически.
-const GROQ_URL = '/api/groq'
+// ========== ПРОКСИ НА RENDER ==========
+const GROQ_URL = 'https://groq-api-3fdr.onrender.com/api/groq'
 
-const MODEL = 'llama-3.3-70b-versatile'
+const MODEL = 'openai/gpt-oss-120b'
 
 // === Утилита: retry для 429/503 ===
-async function fetchWithRetry(url, options, maxRetries = 3) {
+async function fetchWithRetry(url, options, maxRetries = 2) {
 	for (let i = 0; i < maxRetries; i++) {
 		const response = await fetch(url, options)
 		if (response.ok) return response
@@ -18,7 +17,7 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
 	}
 }
 
-// === Общий вызов Groq через свой прокси ===
+// === Общий вызов Groq через прокси ===
 async function callGroq(systemPrompt, userPrompt, expectJson = true) {
 	const body = {
 		model: MODEL,
@@ -27,11 +26,14 @@ async function callGroq(systemPrompt, userPrompt, expectJson = true) {
 			{ role: 'user', content: userPrompt },
 		],
 		temperature: 0.7,
+		max_tokens: 8000, // 🔥 нужно для длинных текстов
 	}
 
 	if (expectJson) {
 		body.response_format = { type: 'json_object' }
 	}
+
+	console.log('🔄 Запрос через прокси:', GROQ_URL)
 
 	const response = await fetchWithRetry(GROQ_URL, {
 		method: 'POST',
@@ -43,15 +45,15 @@ async function callGroq(systemPrompt, userPrompt, expectJson = true) {
 
 	if (!response.ok) {
 		const errText = await response.text()
-		console.error('Groq proxy error:', errText)
-		throw new Error('Не удалось получить ответ от нейросети')
+		console.error('❌ Groq proxy error:', response.status, errText.slice(0, 300))
+		throw new Error(`Прокси вернул ${response.status}`)
 	}
 
 	const data = await response.json()
 	let content = data.choices?.[0]?.message?.content
 
 	if (!content) {
-		console.error('Groq response:', data)
+		console.error('❌ Groq response без content:', data)
 		throw new Error('Нейросеть вернула пустой ответ')
 	}
 
@@ -66,7 +68,7 @@ async function callGroq(systemPrompt, userPrompt, expectJson = true) {
 	try {
 		return JSON.parse(content)
 	} catch (e) {
-		console.error('Не удалось распарсить JSON:', content)
+		console.error('❌ Не удалось распарсить JSON:', content.slice(0, 300))
 		throw new Error('Нейросеть вернула некорректный формат')
 	}
 }
@@ -93,7 +95,7 @@ export async function generatePlaceInfo(place) {
 	return result.info || ''
 }
 
-// === 2. Генерация экскурсии с учётом выбранных мест ===
+// === 2. Генерация экскурсии с полными текстами на 4 минуты ===
 export async function generateTour(places, theme, options = {}) {
 	const { count = 5, selectedIds = [] } = options
 
@@ -109,25 +111,21 @@ export async function generateTour(places, theme, options = {}) {
 	}
 	const themeText = themePrompts[theme] || themePrompts.all
 
-	// Разделяем на выбранные и остальные
 	const selected = places.filter(p => selectedIds.includes(p.id))
 	const others = places.filter(p => !selectedIds.includes(p.id))
 
 	const formatPlace = (p, idx) =>
 		`${idx}. "${p.title}" — ${p.category}. ${p.description || ''}. Адрес: ${p.address || 'не указан'}`
 
-	// Выбранные идут с индексами от 1
 	const selectedBlock =
 		selected.length > 0
 			? `Пользователь уже выбрал эти места (обязательно включи их в экскурсию):
 ${selected.map((p, i) => formatPlace(p, i + 1)).join('\n')}`
 			: ''
 
-	// Остальные — для добора
 	const othersBlock = `Остальные доступные места (можешь добавить их, если не хватает до ${count}):
 ${others.map((p, i) => formatPlace(p, selected.length + i + 1)).join('\n')}`
 
-	// Общий индексированный список — по нему парсим placeIndex
 	const allIndexed = [...selected, ...others]
 
 	const userPrompt = `Тема экскурсии: ${themeText}.
@@ -141,27 +139,50 @@ ${othersBlock}
 - Если выбраны места — начни с них, сохрани порядок 1..${selected.length}.
 - Добери недостающие до ${count} из остальных мест по теме.
 - Выбирай места, логично связанные по теме или расположенные рядом.
-- Верни СТРОГО JSON:
+
+🔥 ГЛАВНОЕ ТРЕБОВАНИЕ — ТЕКСТ РАССКАЗА:
+Для КАЖДОЙ остановки напиши ПОЛНОЦЕННЫЙ ТЕКСТ для экскурсовода на 4 МИНУТЫ (примерно 500-600 слов).
+Это должен быть живой рассказ, который экскурсовод читает вслух группе:
+- Начни с того, что видит группа сейчас (внешний вид, атмосфера).
+- Дай исторический контекст: когда появилось, кем, почему.
+- Расскажи интересные факты, легенды, детали.
+- Свяжи с более широкой историей района/города/страны.
+- Закончи эмоциональным акцентом или риторическим вопросом.
+
+Текст должен быть готов к чтению вслух — без markdown, без звёздочек, без заголовков внутри.
+Используй простые предложения, ритмичную речь, обращения к группе ("обратите внимание", "перед вами", "представьте").
+
+Формат ответа — СТРОГО JSON:
 {
   "title": "Название экскурсии",
-  "intro": "1-2 предложения",
+  "intro": "1-2 предложения вступления",
   "stops": [
-    { "placeIndex": 1, "comment": "2-3 предложения, почему это место здесь" }
+    {
+      "placeIndex": 1,
+      "comment": "Короткая подпись для превью в интерфейсе (1-2 предложения)",
+      "script": "Полный текст рассказа на 4 минуты (500-600 слов). Живой, устный, для чтения вслух."
+    }
   ],
-  "outro": "1 предложение"
+  "outro": "1 предложение завершения"
 }
 
 placeIndex — это номер из общего списка (1..${allIndexed.length}).`
 
 	const systemPrompt =
-		'Ты — экскурсовод по Октябрьскому району Минска. Отвечай строго в JSON без markdown.'
+		'Ты — опытный экскурсовод по Октябрьскому району Минска. Пишешь готовые тексты для устного рассказа. Отвечай строго в JSON без markdown.'
 
 	const parsed = await callGroq(systemPrompt, userPrompt)
 
 	const stops = (parsed.stops || [])
 		.map(s => {
 			const place = allIndexed[s.placeIndex - 1]
-			return place ? { place, comment: s.comment } : null
+			return place
+				? {
+						place,
+						comment: s.comment || '',
+						script: s.script || s.comment || '',
+					}
+				: null
 		})
 		.filter(Boolean)
 

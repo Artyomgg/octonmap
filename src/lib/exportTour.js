@@ -98,22 +98,66 @@ export async function exportTourToDocx(tour) {
 			)
 		}
 
-		// Комментарий от нейросети
-		if (stop.comment) {
+		// 🔥 ГЛАВНОЕ: полный текст для экскурсовода
+		if (stop.script) {
 			children.push(
 				new Paragraph({
 					children: [
 						new TextRun({
-							text: 'Что рассказать: ',
+							text: 'Текст для экскурсовода (4 минуты):',
 							bold: true,
-							size: 22,
+							size: 24,
+							color: '1b2a4a',
+						}),
+					],
+					spacing: { before: 160, after: 120 },
+				}),
+			)
+
+			// Разбиваем длинный текст на абзацы по предложениям
+			// (или по \n, если модель их ставит)
+			const paragraphs = stop.script
+				.split(/\n+/)
+				.map(s => s.trim())
+				.filter(Boolean)
+
+			paragraphs.forEach(text => {
+				children.push(
+					new Paragraph({
+						children: [
+							new TextRun({
+								text,
+								size: 22,
+							}),
+						],
+						spacing: { after: 140 },
+						indent: { left: 300 },
+						alignment: AlignmentType.JUSTIFIED,
+					}),
+				)
+			})
+		}
+
+		// Короткий комментарий (для превью)
+		if (stop.comment && stop.comment !== stop.script) {
+			children.push(
+				new Paragraph({
+					children: [
+						new TextRun({
+							text: 'Кратко: ',
+							bold: true,
+							italics: true,
+							size: 20,
+							color: '6b7a99',
 						}),
 						new TextRun({
 							text: stop.comment,
-							size: 22,
+							italics: true,
+							size: 20,
+							color: '6b7a99',
 						}),
 					],
-					spacing: { after: 200 },
+					spacing: { before: 140, after: 200 },
 					indent: { left: 300 },
 				}),
 			)

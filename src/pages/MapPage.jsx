@@ -27,7 +27,7 @@ const THEME_LABEL = {
 	природа: 'Скверы и улицы',
 }
 
-const COUNT_OPTIONS = [3, 4, 5, 6, 8, 10]
+const COUNT_OPTIONS = [2, 3, 4, 5, 6, 8]
 
 export default function MapPage() {
 	const [places, setPlaces] = useState([])
@@ -187,7 +187,7 @@ function ListMode({
 
 function TourMode({ places, mapRef, setActiveId }) {
 	const [theme, setTheme] = useState('all')
-	const [count, setCount] = useState(5)
+	const [count, setCount] = useState(3)
 	const [selectedIds, setSelectedIds] = useState([])
 	const [tour, setTour] = useState(null)
 	const [loading, setLoading] = useState(false)
@@ -291,8 +291,14 @@ function TourMode({ places, mapRef, setActiveId }) {
 					</ul>
 
 					<button onClick={handleGenerate} disabled={loading} className={styles.buildBtn}>
-						{loading ? '🧠 Нейросеть думает...' : '✨ Сгенерировать экскурсию'}
+						{loading ? '🧠 Нейросеть пишет тексты...' : '✨ Сгенерировать экскурсию'}
 					</button>
+
+					{loading && (
+						<p className={styles.loadingHint}>
+							Это займёт 30-60 секунд — генерируем тексты на 4 минуты для каждой точки.
+						</p>
+					)}
 				</>
 			)}
 
@@ -307,19 +313,27 @@ function TourMode({ places, mapRef, setActiveId }) {
 
 					<ol className={styles.tourList}>
 						{tour.stops.map((stop, i) => (
-							<li
-								key={stop.place.id}
-								className={styles.tourItem}
-								onClick={() => {
-									setActiveId(stop.place.id)
-									mapRef.current?.flyTo([stop.place.lat, stop.place.lng], 17, { duration: 0.8 })
-								}}
-							>
-								<span className={styles.tourIndex}>{i + 1}</span>
-								<div className={styles.tourItemBody}>
-									<strong>{stop.place.title}</strong>
-									<span className={styles.tourComment}>{stop.comment}</span>
+							<li key={stop.place.id} className={styles.tourItem}>
+								<div
+									className={styles.tourItemHeader}
+									onClick={() => {
+										setActiveId(stop.place.id)
+										mapRef.current?.flyTo([stop.place.lat, stop.place.lng], 17, { duration: 0.8 })
+									}}
+								>
+									<span className={styles.tourIndex}>{i + 1}</span>
+									<div className={styles.tourItemBody}>
+										<strong>{stop.place.title}</strong>
+										{stop.comment && <span className={styles.tourComment}>{stop.comment}</span>}
+									</div>
 								</div>
+
+								{stop.script && (
+									<details className={styles.tourScript}>
+										<summary>📖 Показать текст для экскурсовода</summary>
+										<p>{stop.script}</p>
+									</details>
+								)}
 							</li>
 						))}
 					</ol>

@@ -568,3 +568,32 @@
 .resetBtn:hover {
 	background: #e0e6f0;
 }
+
+.tourItemHeader {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	cursor: pointer;
+}
+
+.tourScript {
+	margin-top: 10px;
+	padding: 10px 12px;
+	background: #f9fafc;
+	border-radius: 8px;
+	font-size: 13px;
+}
+
+.tourScript summary {
+	cursor: pointer;
+	font-weight: 600;
+	color: #2a4a8a;
+	font-size: 12px;
+}
+
+.tourScript p {
+	margin: 10px 0 0;
+	line-height: 1.7;
+	color: #1b2a4a;
+	white-space: pre-line;
+}
