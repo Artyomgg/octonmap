@@ -597,3 +597,22 @@
 	color: #1b2a4a;
 	white-space: pre-line;
 }
+
+.showFullBtn {
+	width: 100%;
+	padding: 14px;
+	background: linear-gradient(135deg, #2a4a8a 0%, #1b2a4a 100%);
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	font-weight: 600;
+	font-size: 14px;
+	cursor: pointer;
+	margin: 14px 0;
+	transition: 0.15s;
+}
+
+.showFullBtn:hover {
+	box-shadow: 0 4px 14px rgba(42, 74, 138, 0.3);
+	transform: translateY(-1px);
+}

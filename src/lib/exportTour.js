@@ -44,7 +44,7 @@ export async function exportTourToDocx(tour) {
 		)
 	}
 
-	// Остановки
+	// Заголовок маршрута
 	children.push(
 		new Paragraph({
 			text: 'Маршрут',
@@ -77,7 +77,7 @@ export async function exportTourToDocx(tour) {
 			}),
 		)
 
-		// Мета: категория, адрес, координаты
+		// Мета
 		const meta = []
 		if (p.category) meta.push(`Категория: ${p.category}`)
 		if (p.address) meta.push(`Адрес: ${p.address}`)
@@ -98,7 +98,7 @@ export async function exportTourToDocx(tour) {
 			)
 		}
 
-		// 🔥 ГЛАВНОЕ: полный текст для экскурсовода
+		// Полный текст для экскурсовода
 		if (stop.script) {
 			children.push(
 				new Paragraph({
@@ -114,8 +114,6 @@ export async function exportTourToDocx(tour) {
 				}),
 			)
 
-			// Разбиваем длинный текст на абзацы по предложениям
-			// (или по \n, если модель их ставит)
 			const paragraphs = stop.script
 				.split(/\n+/)
 				.map(s => s.trim())
@@ -138,7 +136,7 @@ export async function exportTourToDocx(tour) {
 			})
 		}
 
-		// Короткий комментарий (для превью)
+		// Краткое описание
 		if (stop.comment && stop.comment !== stop.script) {
 			children.push(
 				new Paragraph({
@@ -163,7 +161,7 @@ export async function exportTourToDocx(tour) {
 			)
 		}
 
-		// Описание места из базы
+		// Описание из базы
 		if (p.description) {
 			children.push(
 				new Paragraph({

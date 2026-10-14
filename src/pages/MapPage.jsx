@@ -5,6 +5,7 @@ import styles from '../css/MapPage.module.css'
 import { exportTourToDocx } from '../lib/exportTour'
 import { fetchApprovedPlaces } from '../lib/places'
 import { generateTour } from '../lib/tourGenerator'
+import TourModal from '../components/Tour/TourModal'
 
 const CATEGORY_LABEL = {
 	all: 'Все категории',
@@ -193,6 +194,7 @@ function TourMode({ places, mapRef, setActiveId }) {
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState('')
 	const [exporting, setExporting] = useState(false)
+	const [modalOpen, setModalOpen] = useState(false) // 🔥 новое
 
 	const toggleSelected = id => {
 		setSelectedIds(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]))
@@ -203,10 +205,7 @@ function TourMode({ places, mapRef, setActiveId }) {
 		setTour(null)
 		setLoading(true)
 		try {
-			const result = await generateTour(places, theme, {
-				count,
-				selectedIds,
-			})
+			const result = await generateTour(places, theme, { count, selectedIds })
 			setTour(result)
 			if (result.stops[0]) {
 				setActiveId(result.stops[0].place.id)
@@ -239,6 +238,7 @@ function TourMode({ places, mapRef, setActiveId }) {
 		<>
 			{!tour && (
 				<>
+					{/* ... форма как была ... */}
 					<label className={styles.tourLabel}>
 						Тема
 						<select
@@ -311,6 +311,11 @@ function TourMode({ places, mapRef, setActiveId }) {
 						{tour.intro && <p className={styles.tourIntro}>{tour.intro}</p>}
 					</div>
 
+					{/* 🔥 Кнопка открытия модалки */}
+					<button onClick={() => setModalOpen(true)} className={styles.showFullBtn}>
+						📖 Показать полный текст экскурсии
+					</button>
+
 					<ol className={styles.tourList}>
 						{tour.stops.map((stop, i) => (
 							<li key={stop.place.id} className={styles.tourItem}>
@@ -327,13 +332,6 @@ function TourMode({ places, mapRef, setActiveId }) {
 										{stop.comment && <span className={styles.tourComment}>{stop.comment}</span>}
 									</div>
 								</div>
-
-								{stop.script && (
-									<details className={styles.tourScript}>
-										<summary>📖 Показать текст для экскурсовода</summary>
-										<p>{stop.script}</p>
-									</details>
-								)}
 							</li>
 						))}
 					</ol>
@@ -351,6 +349,14 @@ function TourMode({ places, mapRef, setActiveId }) {
 					</div>
 				</>
 			)}
+
+			{/* 🔥 Модалка */}
+			<TourModal
+				tour={modalOpen ? tour : null}
+				onClose={() => setModalOpen(false)}
+				onDownload={handleDownload}
+				exporting={exporting}
+			/>
 		</>
 	)
 }

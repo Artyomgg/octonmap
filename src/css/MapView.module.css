@@ -71,3 +71,8 @@
 :global(.leaflet-popup-content-wrapper) {
 	border-radius: 10px;
 }
+
+/* Скрыть всю плашку атрибута внизу справа */
+:global(.leaflet-control-attribution) {
+	display: none !important;
+}
