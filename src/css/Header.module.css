@@ -1,3 +1,6 @@
+/* =========================================
+   БАЗОВЫЕ СТИЛИ (Десктоп)
+   ========================================= */
 .header {
 	display: flex;
 	align-items: center;
@@ -13,10 +16,19 @@
 }
 
 .logo {
+	display: flex;
+	align-items: center;
+	gap: 10px;
 	font-size: 18px;
 	font-weight: 700;
 	color: #fff;
 	text-decoration: none;
+}
+
+.logoIcon {
+	width: 32px;
+	height: 32px;
+	object-fit: contain;
 }
 
 .nav {
@@ -67,7 +79,6 @@
 	color: #fff;
 	border: 1px solid #4a5e85;
 }
-
 .btn:hover {
 	background: #2a3c63;
 }
@@ -77,7 +88,6 @@
 	color: #1b2a4a;
 	font-weight: 600;
 }
-
 .btnPrimary:hover {
 	background: #ffd633;
 }
@@ -85,7 +95,8 @@
 .adminLink {
 	color: #ffcc00 !important;
 	font-weight: 600;
-	position: relative;
+	display: flex;
+	align-items: center;
 }
 
 .adminLink::before {
@@ -99,25 +110,179 @@
 	vertical-align: middle;
 }
 
-.logo {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	font-size: 18px;
-	font-weight: 700;
-	color: #fff;
-	text-decoration: none;
-	transition: opacity 0.2s;
+/* Скрываем мобильные элементы на десктопе */
+.burgerBtn,
+.mobileMenu,
+.overlay {
+	display: none;
 }
 
-.logo:hover {
-	opacity: 0.85;
-}
+/* =========================================
+   МОБИЛЬНАЯ ВЕРСИЯ (до 768px)
+   ========================================= */
+@media (max-width: 768px) {
+	.header {
+		padding: 0 16px;
+		height: 60px;
+	}
 
-.logoIcon {
-	width: 32px;
-	height: 32px;
-	object-fit: contain;
-	display: block;
-	flex-shrink: 0;
+	.logo span {
+		font-size: 15px;
+	}
+	.logoIcon {
+		width: 24px;
+		height: 24px;
+	}
+
+	/* Скрываем десктопные меню */
+	.nav,
+	.auth {
+		display: none;
+	}
+
+	/* Показываем кнопку бургера */
+	.burgerBtn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		z-index: 1002; /* Поверх мобильного меню */
+	}
+
+	/* Иконка бургера (3 полоски) */
+	.burgerIcon {
+		width: 24px;
+		height: 18px;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.burgerIcon span {
+		display: block;
+		height: 2px;
+		width: 100%;
+		background: #fff;
+		border-radius: 2px;
+		transition: 0.3s ease-in-out;
+	}
+
+	/* Анимация превращения в крестик */
+	.burgerIconOpen span:nth-child(1) {
+		transform: translateY(8px) rotate(45deg);
+	}
+	.burgerIconOpen span:nth-child(2) {
+		opacity: 0;
+	}
+	.burgerIconOpen span:nth-child(3) {
+		transform: translateY(-8px) rotate(-45deg);
+	}
+
+	/* Само выезжающее меню */
+	.mobileMenu {
+		display: flex;
+		flex-direction: column;
+		position: fixed;
+		top: 60px; /* Прямо под шапкой */
+		right: -100%; /* Изначально спрятано справа */
+		width: 280px;
+		height: calc(100vh - 60px);
+		background: #1b2a4a;
+		padding: 24px;
+		transition: right 0.3s ease-in-out;
+		z-index: 1001;
+		box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+	}
+
+	.mobileMenuOpen {
+		right: 0; /* Выезжает */
+	}
+
+	.mobileNav {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.mobileLink,
+	.mobileActive {
+		color: #cdd6e8;
+		text-decoration: none;
+		font-size: 16px;
+		padding: 12px 16px;
+		border-radius: 8px;
+		transition: background 0.2s;
+	}
+
+	.mobileLink:hover {
+		background: rgba(255, 255, 255, 0.05);
+		color: #fff;
+	}
+
+	.mobileActive {
+		background: rgba(255, 204, 0, 0.1);
+		color: #ffcc00;
+		font-weight: 600;
+	}
+
+	.mobileAuth {
+		margin-top: auto; /* Прижимаем к низу */
+		padding-top: 24px;
+		border-top: 1px solid #2a3c63;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.mobileEmail {
+		font-size: 13px;
+		color: #8fa1c1;
+		text-align: center;
+	}
+
+	.mobileAuthButtons {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.mobileBtn,
+	.mobileBtnPrimary {
+		width: 100%;
+		padding: 12px;
+		text-align: center;
+		border-radius: 8px;
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 14px;
+		cursor: pointer;
+		border: none;
+	}
+
+	.mobileBtn {
+		background: transparent;
+		color: #fff;
+		border: 1px solid #4a5e85;
+	}
+
+	.mobileBtnPrimary {
+		background: #ffcc00;
+		color: #1b2a4a;
+	}
+
+	/* Затемнение фона */
+	.overlay {
+		display: block;
+		position: fixed;
+		inset: 0;
+		top: 60px;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+		backdrop-filter: blur(2px);
+	}
 }

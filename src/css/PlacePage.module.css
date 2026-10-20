@@ -74,3 +74,30 @@
 	padding: 24px;
 	color: #6b7a99;
 }
+
+@media (max-width: 768px) {
+	.page {
+		padding: 16px;
+	}
+
+	.photo {
+		max-height: 250px;
+		border-radius: 8px;
+	}
+
+	.photoPlaceholder {
+		height: 200px;
+	}
+
+	.page h1 {
+		font-size: 22px;
+	}
+
+	.description {
+		font-size: 15px;
+	}
+
+	.coords {
+		font-size: 12px;
+	}
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import styles from '../../css/Form.module.css'
 import { geocodeAddress } from '../../lib/geocode'
@@ -18,12 +18,7 @@ const CATEGORIES = [
 	'другое',
 ]
 
-const BOUNDS = {
-	minLat: 53.6935,
-	maxLat: 54.0243,
-	minLng: 27.3738,
-	maxLng: 28.0165,
-}
+const BOUNDS = { minLat: 53.6935, maxLat: 54.0243, minLng: 27.3738, maxLng: 28.0165 }
 
 function isInsideDistrict(latlng) {
 	return (
@@ -36,6 +31,9 @@ function isInsideDistrict(latlng) {
 
 export default function PlaceForm({ onSuccess }) {
 	const { user } = useAuth()
+	const [mobileTab, setMobileTab] = useState('form')
+	const mapRef = useRef(null) // 🔥 Ссылка на карту
+
 	const [form, setForm] = useState({
 		title: '',
 		description: '',
@@ -47,11 +45,19 @@ export default function PlaceForm({ onSuccess }) {
 	const [saving, setSaving] = useState(false)
 	const [error, setError] = useState('')
 
-	// Поиск по адресу
 	const [searchQuery, setSearchQuery] = useState('')
 	const [searching, setSearching] = useState(false)
 	const [targetCoords, setTargetCoords] = useState(null)
 	const [searchHint, setSearchHint] = useState('')
+
+	// 🔥 МАГИЯ ТУТ: Когда открывается вкладка "Карта", обновляем размеры Leaflet
+	useEffect(() => {
+		if (mobileTab === 'map' && mapRef.current) {
+			setTimeout(() => {
+				mapRef.current.invalidateSize()
+			}, 150) // ждем, пока отработает CSS
+		}
+	}, [mobileTab])
 
 	const handleChange = e => {
 		setForm({ ...form, [e.target.name]: e.target.value })
@@ -59,13 +65,17 @@ export default function PlaceForm({ onSuccess }) {
 
 	const handleMapClick = latlng => {
 		if (!isInsideDistrict(latlng)) {
-			setError('Пожалуйста, выбирайте точки только в пределах Октябрьского района Минска')
+			setError('Выбирайте точки только в пределах Октябрьского района Минска')
 			return
 		}
 		setError('')
 		setPoint(latlng)
 		if (!form.address && searchQuery) {
 			setForm(f => ({ ...f, address: searchQuery }))
+		}
+		// На телефоне автоматически возвращаем на форму после выбора точки
+		if (window.innerWidth <= 768) {
+			setMobileTab('form')
 		}
 	}
 
@@ -79,7 +89,6 @@ export default function PlaceForm({ onSuccess }) {
 
 		try {
 			const result = await geocodeAddress(searchQuery)
-
 			if (!result) {
 				setSearchHint('Адрес не найден. Попробуйте уточнить запрос.')
 				return
@@ -90,15 +99,13 @@ export default function PlaceForm({ onSuccess }) {
 			if (result.inDistrict) {
 				setPoint({ lat: result.lat, lng: result.lng })
 				setForm(f => ({ ...f, address: f.address || searchQuery }))
-				setSearchHint('✓ Адрес найден в Октябрьском районе. Точка отмечена.')
+				setSearchHint('✓ Адрес найден. Точка отмечена.')
 			} else {
-				setSearchHint(
-					'⚠ Адрес найден, но он за пределами Октябрьского района. Кликните по карте вручную.',
-				)
+				setSearchHint('⚠ Адрес за пределами района. Кликните по карте вручную.')
 			}
 		} catch (e) {
 			console.error(e)
-			setSearchHint('Ошибка поиска. Попробуйте позже.')
+			setSearchHint('Ошибка поиска.')
 		} finally {
 			setSearching(false)
 		}
@@ -113,7 +120,6 @@ export default function PlaceForm({ onSuccess }) {
 
 		try {
 			setSaving(true)
-
 			await createPlace({
 				title: form.title,
 				description: form.description,
@@ -125,7 +131,6 @@ export default function PlaceForm({ onSuccess }) {
 				author_id: user.id,
 				status: 'pending',
 			})
-
 			onSuccess?.()
 		} catch (e) {
 			console.error(e)
@@ -137,7 +142,28 @@ export default function PlaceForm({ onSuccess }) {
 
 	return (
 		<div className={styles.layout}>
-			<form className={styles.form} onSubmit={handleSubmit}>
+			{/* Мобильные табы */}
+			<div className={styles.mobileTabs}>
+				<button
+					type='button'
+					className={mobileTab === 'form' ? styles.mobileTabActive : styles.mobileTab}
+					onClick={() => setMobileTab('form')}
+				>
+					📝 Данные
+				</button>
+				<button
+					type='button'
+					className={mobileTab === 'map' ? styles.mobileTabActive : styles.mobileTab}
+					onClick={() => setMobileTab('map')}
+				>
+					🗺 Карта {point && '✓'}
+				</button>
+			</div>
+
+			<form
+				className={`${styles.form} ${mobileTab === 'map' ? styles.hiddenMobile : ''}`}
+				onSubmit={handleSubmit}
+			>
 				<h2>Новое место</h2>
 
 				<div className={styles.searchBlock}>
@@ -149,9 +175,7 @@ export default function PlaceForm({ onSuccess }) {
 								value={searchQuery}
 								onChange={e => setSearchQuery(e.target.value)}
 								placeholder='ул. Кирова, 1'
-								onKeyDown={e => {
-									if (e.key === 'Enter') handleSearch(e)
-								}}
+								onKeyDown={e => e.key === 'Enter' && handleSearch(e)}
 							/>
 							<button
 								type='button'
@@ -218,8 +242,8 @@ export default function PlaceForm({ onSuccess }) {
 						name='description'
 						value={form.description}
 						onChange={handleChange}
-						rows={4}
-						placeholder='История места, факты...'
+						rows={3}
+						placeholder='История места...'
 					/>
 				</label>
 
@@ -230,7 +254,7 @@ export default function PlaceForm({ onSuccess }) {
 						type='url'
 						value={form.photo_url}
 						onChange={handleChange}
-						placeholder='https://example.com/photo.jpg'
+						placeholder='https://...'
 					/>
 				</label>
 
@@ -239,19 +263,15 @@ export default function PlaceForm({ onSuccess }) {
 						src={form.photo_url}
 						alt='preview'
 						className={styles.preview}
-						onError={e => {
-							e.target.style.display = 'none'
-						}}
-						onLoad={e => {
-							e.target.style.display = 'block'
-						}}
+						onError={e => (e.target.style.display = 'none')}
+						onLoad={e => (e.target.style.display = 'block')}
 					/>
 				)}
 
 				<div className={styles.coords}>
 					{point
-						? `Координаты: ${point.lat.toFixed(5)}, ${point.lng.toFixed(5)}`
-						: 'Кликните по карте или найдите адрес через поиск'}
+						? `📍 Координаты: ${point.lat.toFixed(5)}, ${point.lng.toFixed(5)}`
+						: 'Точка не выбрана'}
 				</div>
 
 				<button type='submit' disabled={saving} className={styles.submit}>
@@ -259,8 +279,13 @@ export default function PlaceForm({ onSuccess }) {
 				</button>
 			</form>
 
-			<div className={styles.mapArea}>
-				<MapView onMapClick={handleMapClick} pickedPoint={point} targetCoords={targetCoords} />
+			<div className={`${styles.mapArea} ${mobileTab === 'form' ? styles.hiddenMobile : ''}`}>
+				<MapView
+					onMapClick={handleMapClick}
+					pickedPoint={point}
+					targetCoords={targetCoords}
+					mapRef={mapRef}
+				/>
 			</div>
 		</div>
 	)
