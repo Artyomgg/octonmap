@@ -272,3 +272,34 @@
 .delete:hover {
 	background: #ffc7c7;
 }
+
+/* === Кнопки в карточках (чтобы иконки стояли ровно с текстом) === */
+.approve,
+.reject,
+.edit,
+.delete {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px; /* Отступ между иконкой и текстом */
+}
+
+/* === Обертка для таблицы (чтобы на телефоне был горизонтальный скролл) === */
+.tableWrap {
+	width: 100%;
+	overflow-x: auto; /* Позволяет скроллить таблицу по горизонтали на узких экранах */
+	-webkit-overflow-scrolling: touch;
+}
+
+/* === Таблица === */
+.table {
+	width: 100%;
+	min-width: 600px; /* Задаем минимальную ширину, чтобы таблица не сжималась в кашу */
+	border-collapse: collapse;
+	background: #fff;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ... остальные стили таблицы (th, td, tr) оставляем как были ... */

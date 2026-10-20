@@ -4,6 +4,7 @@
 	padding: 0 24px 60px;
 }
 
+/* === HERO === */
 .hero {
 	padding: 80px 0 60px;
 	text-align: center;
@@ -65,7 +66,6 @@
 	background: #ffcc00;
 	color: #1b2a4a;
 }
-
 .btnPrimary:hover {
 	background: #ffd633;
 	transform: translateY(-1px);
@@ -76,11 +76,11 @@
 	color: #1b2a4a;
 	border: 1px solid #cdd6e8;
 }
-
 .btnGhost:hover {
 	background: #eef1f7;
 }
 
+/* === FEATURES === */
 .features {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -95,10 +95,16 @@
 	box-shadow: 0 2px 12px rgba(27, 42, 74, 0.06);
 }
 
-.icon {
-	font-size: 32px;
-	display: block;
-	margin-bottom: 12px;
+.iconWrap {
+	color: #2a4a8a;
+	margin-bottom: 16px;
+	background: #eef1f7;
+	width: 56px;
+	height: 56px;
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .feature h3 {
@@ -114,6 +120,7 @@
 	color: #6b7a99;
 }
 
+/* === STATS === */
 .stats {
 	display: flex;
 	justify-content: space-around;
@@ -143,6 +150,7 @@
 	letter-spacing: 0.5px;
 }
 
+/* === CTA === */
 .cta {
 	text-align: center;
 	padding: 60px 20px;
@@ -159,4 +167,62 @@
 .cta p {
 	margin: 0 0 24px;
 	color: #cdd6e8;
+}
+
+/* === МОБИЛЬНАЯ АДАПТАЦИЯ === */
+@media (max-width: 768px) {
+	.page {
+		padding: 0 16px 40px;
+	}
+
+	.hero {
+		padding: 40px 0 30px;
+	}
+
+	.hero h1 {
+		font-size: 32px;
+	}
+
+	.lead {
+		font-size: 15px;
+		margin-bottom: 24px;
+	}
+
+	.actions {
+		flex-direction: column;
+	}
+
+	.btnPrimary,
+	.btnGhost {
+		width: 100%;
+		padding: 12px;
+	}
+
+	.features {
+		gap: 16px;
+		margin: 24px 0;
+	}
+
+	.feature {
+		padding: 20px;
+	}
+
+	.stats {
+		padding: 24px 0;
+		margin: 24px 0;
+		gap: 16px;
+	}
+
+	.stats strong {
+		font-size: 24px;
+	}
+
+	.cta {
+		padding: 40px 16px;
+		border-radius: 12px;
+	}
+
+	.cta h2 {
+		font-size: 22px;
+	}
 }

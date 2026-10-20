@@ -1,8 +1,8 @@
+import { BookOpen, FileDown, X } from 'lucide-react'
 import { useEffect } from 'react'
 import styles from '../../css/TourModal.module.css'
 
 export default function TourModal({ tour, onClose, onDownload, exporting }) {
-	// Закрытие по Esc
 	useEffect(() => {
 		const handler = e => {
 			if (e.key === 'Escape') onClose()
@@ -11,7 +11,6 @@ export default function TourModal({ tour, onClose, onDownload, exporting }) {
 		return () => window.removeEventListener('keydown', handler)
 	}, [onClose])
 
-	// Блокируем скролл body, пока модалка открыта
 	useEffect(() => {
 		document.body.style.overflow = 'hidden'
 		return () => {
@@ -24,7 +23,6 @@ export default function TourModal({ tour, onClose, onDownload, exporting }) {
 	return (
 		<div className={styles.overlay} onClick={onClose}>
 			<div className={styles.modal} onClick={e => e.stopPropagation()}>
-				{/* Заголовок с кнопками */}
 				<div className={styles.header}>
 					<div className={styles.headerText}>
 						<h1>{tour.title}</h1>
@@ -35,15 +33,21 @@ export default function TourModal({ tour, onClose, onDownload, exporting }) {
 
 					<div className={styles.headerActions}>
 						<button onClick={onDownload} disabled={exporting} className={styles.downloadBtn}>
-							{exporting ? '⏳ Готовим...' : '📄 Скачать .docx'}
+							{exporting ? (
+								'⏳ Готовим...'
+							) : (
+								<>
+									<FileDown size={16} style={{ marginRight: 6 }} />
+									Скачать .docx
+								</>
+							)}
 						</button>
 						<button onClick={onClose} className={styles.closeBtn}>
-							✕
+							<X size={20} />
 						</button>
 					</div>
 				</div>
 
-				{/* Контент */}
 				<div className={styles.content}>
 					{tour.intro && <p className={styles.intro}>{tour.intro}</p>}
 
@@ -68,7 +72,10 @@ export default function TourModal({ tour, onClose, onDownload, exporting }) {
 
 							{stop.script && (
 								<div className={styles.scriptBlock}>
-									<h3 className={styles.scriptTitle}>📖 Текст для экскурсовода (4 минуты)</h3>
+									<h3 className={styles.scriptTitle}>
+										<BookOpen size={16} style={{ marginRight: 6 }} />
+										Текст для экскурсовода (4 минуты)
+									</h3>
 									<div className={styles.scriptText}>
 										{stop.script
 											.split(/\n+/)

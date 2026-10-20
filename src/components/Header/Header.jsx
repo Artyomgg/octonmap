@@ -1,3 +1,4 @@
+import { Settings } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router'
 import { useAuth } from '../../context/AuthContext'
@@ -6,13 +7,11 @@ import styles from '../../css/Header.module.css'
 export default function Header() {
 	const { user, isAdmin, signOut } = useAuth()
 	const navigate = useNavigate()
-
-	// 🔥 Состояние для открытия/закрытия мобильного меню
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
 	const handleLogout = async () => {
 		await signOut()
-		setIsMobileMenuOpen(false) // Закрываем меню при выходе
+		setIsMobileMenuOpen(false)
 		navigate('/')
 	}
 
@@ -21,13 +20,11 @@ export default function Header() {
 	return (
 		<>
 			<header className={styles.header}>
-				{/* Логотип */}
 				<Link to='/' className={styles.logo} onClick={closeMenu}>
 					<img src='/img/favicon.png' alt='' className={styles.logoIcon} />
 					<span>Октябрьский — Помним</span>
 				</Link>
 
-				{/* Десктопное меню */}
 				<nav className={styles.nav}>
 					<NavLink to='/' className={({ isActive }) => (isActive ? styles.active : '')}>
 						Главная
@@ -52,12 +49,12 @@ export default function Header() {
 							to='/admin'
 							className={({ isActive }) => `${styles.adminLink} ${isActive ? styles.active : ''}`}
 						>
-							⚙ Админка
+							<Settings size={16} />
+							<span>Админка</span>
 						</NavLink>
 					)}
 				</nav>
 
-				{/* Десктопные кнопки авторизации */}
 				<div className={styles.auth}>
 					{user ? (
 						<>
@@ -78,7 +75,6 @@ export default function Header() {
 					)}
 				</div>
 
-				{/* 🔥 Кнопка Бургер (видна только на мобильных) */}
 				<button
 					className={styles.burgerBtn}
 					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -92,7 +88,6 @@ export default function Header() {
 				</button>
 			</header>
 
-			{/* 🔥 Мобильное меню (выезжает сверху) */}
 			<div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
 				<nav className={styles.mobileNav}>
 					<NavLink
@@ -135,7 +130,8 @@ export default function Header() {
 							onClick={closeMenu}
 							className={({ isActive }) => (isActive ? styles.mobileActive : styles.mobileLink)}
 						>
-							⚙ Админка
+							<Settings size={18} style={{ marginRight: '8px' }} />
+							Админка
 						</NavLink>
 					)}
 				</nav>
@@ -161,7 +157,6 @@ export default function Header() {
 				</div>
 			</div>
 
-			{/* Затемнение фона при открытом меню */}
 			{isMobileMenuOpen && <div className={styles.overlay} onClick={closeMenu}></div>}
 		</>
 	)

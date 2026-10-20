@@ -1,11 +1,12 @@
+import { BookOpen, FileDown, MapPin, Navigation, RotateCcw, Search, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import MapView from '../components/Map/MapView'
+import TourModal from '../components/Tour/TourModal'
 import styles from '../css/MapPage.module.css'
 import { exportTourToDocx } from '../lib/exportTour'
 import { fetchApprovedPlaces } from '../lib/places'
 import { generateTour } from '../lib/tourGenerator'
-import TourModal from '../components/Tour/TourModal'
 
 const CATEGORY_LABEL = {
 	all: 'Все категории',
@@ -67,13 +68,13 @@ export default function MapPage() {
 						className={mode === 'list' ? styles.tabActive : styles.tab}
 						onClick={() => setMode('list')}
 					>
-						📍 Все
+						<MapPin size={16} /> Все
 					</button>
 					<button
 						className={mode === 'tour' ? styles.tabActive : styles.tab}
 						onClick={() => setMode('tour')}
 					>
-						🧭 Экскурсия
+						<Navigation size={16} /> Экскурсия
 					</button>
 				</div>
 
@@ -117,13 +118,16 @@ function ListMode({
 }) {
 	return (
 		<>
-			<input
-				type='search'
-				placeholder='Поиск по названию или адресу...'
-				value={query}
-				onChange={e => setQuery(e.target.value)}
-				className={styles.search}
-			/>
+			<div className={styles.searchWrap}>
+				<Search size={16} className={styles.searchIcon} />
+				<input
+					type='search'
+					placeholder='Поиск по названию или адресу...'
+					value={query}
+					onChange={e => setQuery(e.target.value)}
+					className={styles.search}
+				/>
+			</div>
 
 			<select
 				value={category}
@@ -144,7 +148,10 @@ function ListMode({
 			{loading ? (
 				<p>Загрузка...</p>
 			) : places.length === 0 ? (
-				<p className={styles.empty}>Ничего не найдено</p>
+				<div className={styles.empty}>
+					<MapPin size={32} style={{ opacity: 0.3, marginBottom: 8 }} />
+					<p>Ничего не найдено</p>
+				</div>
 			) : (
 				<ul className={styles.list}>
 					{places.map(p => (
@@ -163,7 +170,9 @@ function ListMode({
 										}}
 									/>
 								) : (
-									<div className={styles.thumbPlaceholder}>📍</div>
+									<div className={styles.thumbPlaceholder}>
+										<MapPin size={20} />
+									</div>
 								)}
 								<div className={styles.itemContent}>
 									<strong>{p.title}</strong>
@@ -194,7 +203,7 @@ function TourMode({ places, mapRef, setActiveId }) {
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState('')
 	const [exporting, setExporting] = useState(false)
-	const [modalOpen, setModalOpen] = useState(false) // 🔥 новое
+	const [modalOpen, setModalOpen] = useState(false)
 
 	const toggleSelected = id => {
 		setSelectedIds(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]))
@@ -238,7 +247,6 @@ function TourMode({ places, mapRef, setActiveId }) {
 		<>
 			{!tour && (
 				<>
-					{/* ... форма как была ... */}
 					<label className={styles.tourLabel}>
 						Тема
 						<select
@@ -291,7 +299,14 @@ function TourMode({ places, mapRef, setActiveId }) {
 					</ul>
 
 					<button onClick={handleGenerate} disabled={loading} className={styles.buildBtn}>
-						{loading ? '🧠 Нейросеть пишет тексты...' : '✨ Сгенерировать экскурсию'}
+						{loading ? (
+							'Нейросеть пишет тексты...'
+						) : (
+							<>
+								<Sparkles size={18} style={{ marginRight: 8 }} />
+								Сгенерировать экскурсию
+							</>
+						)}
 					</button>
 
 					{loading && (
@@ -311,9 +326,9 @@ function TourMode({ places, mapRef, setActiveId }) {
 						{tour.intro && <p className={styles.tourIntro}>{tour.intro}</p>}
 					</div>
 
-					{/* 🔥 Кнопка открытия модалки */}
 					<button onClick={() => setModalOpen(true)} className={styles.showFullBtn}>
-						📖 Показать полный текст экскурсии
+						<BookOpen size={18} style={{ marginRight: 8 }} />
+						Показать полный текст экскурсии
 					</button>
 
 					<ol className={styles.tourList}>
@@ -340,17 +355,24 @@ function TourMode({ places, mapRef, setActiveId }) {
 
 					<div className={styles.tourActions}>
 						<button onClick={handleDownload} disabled={exporting} className={styles.downloadBtn}>
-							{exporting ? '⏳ Готовим файл...' : '📄 Скачать .docx'}
+							{exporting ? (
+								'Готовим файл...'
+							) : (
+								<>
+									<FileDown size={16} style={{ marginRight: 6 }} />
+									Скачать .docx
+								</>
+							)}
 						</button>
 
 						<button onClick={() => setTour(null)} className={styles.resetBtn}>
+							<RotateCcw size={16} style={{ marginRight: 6 }} />
 							Сбросить
 						</button>
 					</div>
 				</>
 			)}
 
-			{/* 🔥 Модалка */}
 			<TourModal
 				tour={modalOpen ? tour : null}
 				onClose={() => setModalOpen(false)}

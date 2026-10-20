@@ -1,3 +1,4 @@
+import { Edit3, Map, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
 import styles from '../css/Home.module.css'
 
@@ -12,9 +13,8 @@ export default function Home() {
 						<span className={styles.accent}>Октябрьского района</span>
 					</h1>
 					<p className={styles.lead}>
-						Интерактивная карта памятников, исторических мест, архитектуры и достопримечательностей
-						района. Добавляйте места, которых нет в официальных реестрах, и сохраняйте историю
-						вместе.
+						Интерактивный гид с искусственным интеллектом. Исследуйте историю, добавляйте
+						неизвестные памятники и создавайте готовые экскурсии в один клик.
 					</p>
 					<div className={styles.actions}>
 						<Link to='/map' className={styles.btnPrimary}>
@@ -29,7 +29,9 @@ export default function Home() {
 
 			<section className={styles.features}>
 				<div className={styles.feature}>
-					<span className={styles.icon}>🗺</span>
+					<div className={styles.iconWrap}>
+						<Map size={32} />
+					</div>
 					<h3>Интерактивная карта</h3>
 					<p>
 						Все значимые места района на одной карте. Фильтруйте по категориям, находите ближайшие к
@@ -37,7 +39,9 @@ export default function Home() {
 					</p>
 				</div>
 				<div className={styles.feature}>
-					<span className={styles.icon}>✍️</span>
+					<div className={styles.iconWrap}>
+						<Edit3 size={32} />
+					</div>
 					<h3>Народный архив</h3>
 					<p>
 						Любой житель может добавить место, которого нет в базе. Модератор проверит — и точка
@@ -45,9 +49,14 @@ export default function Home() {
 					</p>
 				</div>
 				<div className={styles.feature}>
-					<span className={styles.icon}>🏛</span>
-					<h3>История и культура</h3>
-					<p>Памятники, архитектура, мемориалы, скверы и знаковые места — всё в одном месте.</p>
+					<div className={styles.iconWrap}>
+						<Sparkles size={32} />
+					</div>
+					<h3>Экскурсии от ИИ</h3>
+					<p>
+						Нейросеть составит маршрут и напишет готовый текст для экскурсовода на основе выбранных
+						вами мест.
+					</p>
 				</div>
 			</section>
 
@@ -61,8 +70,8 @@ export default function Home() {
 					<span>категорий мест</span>
 				</div>
 				<div>
-					<strong>∞</strong>
-					<span>память</span>
+					<strong>AI</strong>
+					<span>генерация текстов</span>
 				</div>
 			</section>
 

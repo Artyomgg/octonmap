@@ -1,3 +1,4 @@
+import { FileText, Map as MapIcon, Search } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import styles from '../../css/Form.module.css'
@@ -32,7 +33,7 @@ function isInsideDistrict(latlng) {
 export default function PlaceForm({ onSuccess }) {
 	const { user } = useAuth()
 	const [mobileTab, setMobileTab] = useState('form')
-	const mapRef = useRef(null) // 🔥 Ссылка на карту
+	const mapRef = useRef(null)
 
 	const [form, setForm] = useState({
 		title: '',
@@ -50,12 +51,11 @@ export default function PlaceForm({ onSuccess }) {
 	const [targetCoords, setTargetCoords] = useState(null)
 	const [searchHint, setSearchHint] = useState('')
 
-	// 🔥 МАГИЯ ТУТ: Когда открывается вкладка "Карта", обновляем размеры Leaflet
 	useEffect(() => {
 		if (mobileTab === 'map' && mapRef.current) {
 			setTimeout(() => {
 				mapRef.current.invalidateSize()
-			}, 150) // ждем, пока отработает CSS
+			}, 150)
 		}
 	}, [mobileTab])
 
@@ -73,7 +73,6 @@ export default function PlaceForm({ onSuccess }) {
 		if (!form.address && searchQuery) {
 			setForm(f => ({ ...f, address: searchQuery }))
 		}
-		// На телефоне автоматически возвращаем на форму после выбора точки
 		if (window.innerWidth <= 768) {
 			setMobileTab('form')
 		}
@@ -142,21 +141,20 @@ export default function PlaceForm({ onSuccess }) {
 
 	return (
 		<div className={styles.layout}>
-			{/* Мобильные табы */}
 			<div className={styles.mobileTabs}>
 				<button
 					type='button'
 					className={mobileTab === 'form' ? styles.mobileTabActive : styles.mobileTab}
 					onClick={() => setMobileTab('form')}
 				>
-					📝 Данные
+					<FileText size={16} /> Данные
 				</button>
 				<button
 					type='button'
 					className={mobileTab === 'map' ? styles.mobileTabActive : styles.mobileTab}
 					onClick={() => setMobileTab('map')}
 				>
-					🗺 Карта {point && '✓'}
+					<MapIcon size={16} /> Карта {point && '✓'}
 				</button>
 			</div>
 
@@ -183,7 +181,7 @@ export default function PlaceForm({ onSuccess }) {
 								disabled={searching}
 								className={styles.searchBtn}
 							>
-								{searching ? '...' : '🔍'}
+								{searching ? '...' : <Search size={18} />}
 							</button>
 						</div>
 					</label>
@@ -270,7 +268,7 @@ export default function PlaceForm({ onSuccess }) {
 
 				<div className={styles.coords}>
 					{point
-						? `📍 Координаты: ${point.lat.toFixed(5)}, ${point.lng.toFixed(5)}`
+						? `Координаты: ${point.lat.toFixed(5)}, ${point.lng.toFixed(5)}`
 						: 'Точка не выбрана'}
 				</div>
 

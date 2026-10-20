@@ -1,19 +1,26 @@
+/* =========================================
+   ОСНОВНОЙ ЛЭЙАУТ
+   ========================================= */
 .layout {
 	display: flex;
 	height: calc(100vh - 70px);
 	background: #f4f6fa;
+	position: relative;
 }
 
-/* === Сайдбар === */
+/* =========================================
+   САЙДБАР
+   ========================================= */
 .sidebar {
 	width: 380px;
 	background: #fff;
-	padding: 20px 20px 16px;
+	padding: 20px;
 	overflow-y: auto;
 	border-right: 1px solid #e0e6f0;
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
+	z-index: 10;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -37,13 +44,29 @@
 	letter-spacing: 0.2px;
 }
 
-/* === Поиск === */
+/* =========================================
+   ПОИСК И СЕЛЕКТ
+   ========================================= */
+.searchWrap {
+	position: relative;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.searchIcon {
+	position: absolute;
+	left: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #8fa1c1;
+	pointer-events: none;
+}
+
 .search {
 	width: 100%;
-	padding: 9px 14px;
+	padding: 9px 14px 9px 36px; /* Отступ слева под иконку поиска */
 	border: 1px solid #e0e6f0;
 	border-radius: 10px;
-	margin-bottom: 10px;
 	font-size: 14px;
 	font-family: inherit;
 	color: #1b2a4a;
@@ -62,7 +85,6 @@
 	box-shadow: 0 0 0 3px rgba(42, 74, 138, 0.08);
 }
 
-/* === Категория === */
 .select {
 	width: 100%;
 	padding: 9px 14px;
@@ -88,7 +110,6 @@
 	box-shadow: 0 0 0 3px rgba(42, 74, 138, 0.08);
 }
 
-/* === Счётчик === */
 .counter {
 	font-size: 12px;
 	color: #6b7a99;
@@ -104,7 +125,9 @@
 	font-weight: 700;
 }
 
-/* === Список === */
+/* =========================================
+   СПИСОК МЕСТ
+   ========================================= */
 .list {
 	list-style: none;
 	padding: 0;
@@ -152,7 +175,6 @@
 	min-width: 0;
 }
 
-/* === Миниатюра === */
 .thumb {
 	width: 56px;
 	height: 56px;
@@ -170,12 +192,10 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 22px;
-	flex-shrink: 0;
 	color: #8fa1c1;
+	flex-shrink: 0;
 }
 
-/* === Контент === */
 .itemContent {
 	display: flex;
 	flex-direction: column;
@@ -213,7 +233,6 @@
 	text-overflow: ellipsis;
 }
 
-/* === Кнопка "Подробнее" === */
 .details {
 	padding: 0 14px 0 6px;
 	color: #8fa1c1;
@@ -231,47 +250,20 @@
 	transform: translateX(2px);
 }
 
-/* === Пустое состояние === */
 .empty {
 	color: #8fa1c1;
 	font-size: 14px;
 	text-align: center;
 	padding: 30px 10px;
 	line-height: 1.5;
-}
-
-/* === Кнопка "Добавить" === */
-.addBtn {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	gap: 6px;
-	text-align: center;
-	background: linear-gradient(135deg, #1b2a4a 0%, #2a3c63 100%);
-	color: #fff;
-	font-weight: 600;
-	font-size: 14px;
-	padding: 12px;
-	border-radius: 10px;
-	text-decoration: none;
-	margin-top: 14px;
-	transition: 0.15s;
-	box-shadow: 0 2px 8px rgba(27, 42, 74, 0.15);
 }
 
-.addBtn:hover {
-	background: linear-gradient(135deg, #2a3c63 0%, #1b2a4a 100%);
-	box-shadow: 0 4px 12px rgba(27, 42, 74, 0.25);
-	transform: translateY(-1px);
-}
-
-/* === Карта === */
-.mapArea {
-	flex: 1;
-	position: relative;
-}
-
-/* === Табы === */
+/* =========================================
+   ТАБЫ (Все / Экскурсия)
+   ========================================= */
 .tabs {
 	display: flex;
 	gap: 6px;
@@ -294,6 +286,11 @@
 	color: #6b7a99;
 	font-family: inherit;
 	transition: 0.15s;
+	/* 🔥 Выравнивание иконок в табах */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
 }
 
 .tabActive {
@@ -302,14 +299,9 @@
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-/* === Tour Mode === */
-.tourTitle {
-	font-size: 15px;
-	font-weight: 600;
-	color: #1b2a4a;
-	margin: 0 0 12px;
-}
-
+/* =========================================
+   РЕЖИМ ЭКСКУРСИИ (TourMode)
+   ========================================= */
 .tourLabel {
 	display: block;
 	font-size: 13px;
@@ -318,6 +310,61 @@
 	font-weight: 500;
 }
 
+.selectHint {
+	font-size: 12px;
+	color: #6b7a99;
+	margin: 4px 0 8px;
+	line-height: 1.4;
+}
+
+.pickList {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 12px;
+	max-height: 200px;
+	overflow-y: auto;
+	border: 1px solid #e0e6f0;
+	border-radius: 10px;
+	background: #f9fafc;
+}
+
+.pickItem {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 12px;
+	border-bottom: 1px solid #eef1f7;
+	font-size: 13px;
+}
+
+.pickItem:last-child {
+	border-bottom: none;
+}
+
+.pickItem label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+	color: #1b2a4a;
+	flex: 1;
+	min-width: 0;
+}
+
+.pickItem input[type='checkbox'] {
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	accent-color: #1b2a4a;
+}
+
+.pickItem span {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* 🔥 ГЛАВНАЯ КНОПКА ГЕНЕРАЦИИ */
 .buildBtn {
 	width: 100%;
 	padding: 12px;
@@ -330,11 +377,28 @@
 	cursor: pointer;
 	transition: 0.15s;
 	margin-top: 6px;
+	/* 🔥 Выравнивание иконки */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
 }
 
-.buildBtn:hover {
+.buildBtn:hover:not(:disabled) {
 	box-shadow: 0 4px 12px rgba(27, 42, 74, 0.25);
 	transform: translateY(-1px);
+}
+
+.buildBtn:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+.loadingHint {
+	font-size: 12px;
+	color: #8a6500;
+	margin-top: 8px;
+	text-align: center;
 }
 
 .tourError {
@@ -346,21 +410,50 @@
 	margin-top: 10px;
 }
 
-.tourSummary {
-	display: flex;
-	justify-content: space-between;
+.tourHeader {
 	background: #fffbe8;
 	border: 1px solid #ffcc00;
 	border-radius: 10px;
-	padding: 10px 14px;
-	margin: 14px 0 10px;
-	font-size: 13px;
+	padding: 12px 14px;
+	margin-top: 14px;
+}
+
+.tourHeader h4 {
+	margin: 0 0 6px;
+	font-size: 14px;
 	color: #1b2a4a;
 }
 
-.tourSummary strong {
-	color: #1b2a4a;
-	font-weight: 700;
+.tourIntro {
+	margin: 0;
+	font-size: 13px;
+	color: #4a5e85;
+	line-height: 1.5;
+}
+
+/* 🔥 КНОПКА "ПОКАЗАТЬ ПОЛНЫЙ ТЕКСТ" */
+.showFullBtn {
+	width: 100%;
+	padding: 14px;
+	background: linear-gradient(135deg, #2a4a8a 0%, #1b2a4a 100%);
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	font-weight: 600;
+	font-size: 14px;
+	cursor: pointer;
+	margin: 14px 0;
+	transition: 0.15s;
+	/* 🔥 Выравнивание иконки */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.showFullBtn:hover {
+	box-shadow: 0 4px 14px rgba(42, 74, 138, 0.3);
+	transform: translateY(-1px);
 }
 
 .tourList {
@@ -419,45 +512,6 @@
 	text-overflow: ellipsis;
 }
 
-.resetBtn {
-	width: 100%;
-	padding: 10px;
-	margin-top: 14px;
-	background: #eef1f7;
-	color: #1b2a4a;
-	border: none;
-	border-radius: 10px;
-	font-weight: 600;
-	font-size: 13px;
-	cursor: pointer;
-	transition: 0.15s;
-}
-
-.resetBtn:hover {
-	background: #e0e6f0;
-}
-
-.tourHeader {
-	background: #fffbe8;
-	border: 1px solid #ffcc00;
-	border-radius: 10px;
-	padding: 12px 14px;
-	margin-top: 14px;
-}
-
-.tourHeader h4 {
-	margin: 0 0 6px;
-	font-size: 14px;
-	color: #1b2a4a;
-}
-
-.tourIntro {
-	margin: 0;
-	font-size: 13px;
-	color: #4a5e85;
-	line-height: 1.5;
-}
-
 .tourComment {
 	font-size: 12px;
 	color: #6b7a99;
@@ -473,66 +527,13 @@
 	font-style: italic;
 }
 
-.selectHint {
-	font-size: 12px;
-	color: #6b7a99;
-	margin: 4px 0 8px;
-	line-height: 1.4;
-}
-
-.pickList {
-	list-style: none;
-	padding: 0;
-	margin: 0 0 12px;
-	max-height: 200px;
-	overflow-y: auto;
-	border: 1px solid #e0e6f0;
-	border-radius: 10px;
-	background: #f9fafc;
-}
-
-.pickItem {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 8px 12px;
-	border-bottom: 1px solid #eef1f7;
-	font-size: 13px;
-}
-
-.pickItem:last-child {
-	border-bottom: none;
-}
-
-.pickItem label {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	cursor: pointer;
-	color: #1b2a4a;
-	flex: 1;
-	min-width: 0;
-}
-
-.pickItem input[type='checkbox'] {
-	width: 16px;
-	height: 16px;
-	cursor: pointer;
-	accent-color: #1b2a4a;
-}
-
-.pickItem span {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
 .tourActions {
 	display: flex;
 	gap: 8px;
 	margin-top: 14px;
 }
 
+/* 🔥 КНОПКА СКАЧИВАНИЯ */
 .downloadBtn {
 	flex: 2;
 	padding: 11px;
@@ -544,17 +545,27 @@
 	font-size: 13px;
 	cursor: pointer;
 	transition: 0.15s;
+	/* 🔥 Выравнивание иконки */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
 }
 
-.downloadBtn:hover {
+.downloadBtn:hover:not(:disabled) {
 	box-shadow: 0 4px 12px rgba(26, 122, 58, 0.25);
 	transform: translateY(-1px);
 }
 
+.downloadBtn:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+/* 🔥 КНОПКА СБРОСА */
 .resetBtn {
 	flex: 1;
 	padding: 11px;
-	margin-top: 0;
 	background: #eef1f7;
 	color: #1b2a4a;
 	border: none;
@@ -563,110 +574,48 @@
 	font-size: 13px;
 	cursor: pointer;
 	transition: 0.15s;
+	/* 🔥 Выравнивание иконки */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
 }
 
 .resetBtn:hover {
 	background: #e0e6f0;
 }
 
-.tourItemHeader {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	cursor: pointer;
-}
-
-.tourScript {
-	margin-top: 10px;
-	padding: 10px 12px;
-	background: #f9fafc;
-	border-radius: 8px;
-	font-size: 13px;
-}
-
-.tourScript summary {
-	cursor: pointer;
-	font-weight: 600;
-	color: #2a4a8a;
-	font-size: 12px;
-}
-
-.tourScript p {
-	margin: 10px 0 0;
-	line-height: 1.7;
-	color: #1b2a4a;
-	white-space: pre-line;
-}
-
-.showFullBtn {
-	width: 100%;
-	padding: 14px;
-	background: linear-gradient(135deg, #2a4a8a 0%, #1b2a4a 100%);
-	color: #fff;
-	border: none;
-	border-radius: 10px;
-	font-weight: 600;
-	font-size: 14px;
-	cursor: pointer;
-	margin: 14px 0;
-	transition: 0.15s;
-}
-
-.showFullBtn:hover {
-	box-shadow: 0 4px 14px rgba(42, 74, 138, 0.3);
-	transform: translateY(-1px);
-}
-
-.layout {
-	display: flex;
-	height: calc(100vh - 70px);
-	background: #f4f6fa;
-	position: relative;
-}
-
-/* === Сайдбар (Десктоп) === */
-.sidebar {
-	width: 380px;
-	background: #fff;
-	padding: 20px;
-	overflow-y: auto;
-	border-right: 1px solid #e0e6f0;
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	z-index: 10;
-}
-
-/* ... остальные стили сайдбара оставляем как были (search, select, list, item и т.д.) ... */
-
+/* =========================================
+   КАРТА
+   ========================================= */
 .mapArea {
 	flex: 1;
 	position: relative;
 	z-index: 1;
 }
 
-/* === МОБИЛЬНАЯ АДАПТАЦИЯ === */
+/* =========================================
+   МОБИЛЬНАЯ АДАПТАЦИЯ
+   ========================================= */
 @media (max-width: 768px) {
 	.layout {
 		flex-direction: column;
 		height: calc(100dvh - 60px); /* 60px — высота мобильной шапки */
 	}
 
-	/* Карта на весь экран */
 	.mapArea {
 		position: absolute;
 		inset: 0;
 		z-index: 1;
 	}
 
-	/* Сайдбар выезжает снизу как шторка */
 	.sidebar {
 		position: absolute;
 		bottom: 0;
 		left: 0;
 		right: 0;
 		width: 100%;
-		height: 45vh; /* Занимает 45% экрана */
+		height: 50vh; /* Чуть увеличили для удобства */
 		border-right: none;
 		border-top: 1px solid #e0e6f0;
 		border-radius: 20px 20px 0 0;
@@ -676,7 +625,6 @@
 		transition: height 0.3s ease;
 	}
 
-	/* Ручка для свайпа (визуальная) */
 	.sidebar::before {
 		content: '';
 		display: block;
@@ -707,15 +655,10 @@
 		gap: 8px;
 	}
 
-	.thumb {
-		width: 40px;
-		height: 40px;
-	}
-
+	.thumb,
 	.thumbPlaceholder {
 		width: 40px;
 		height: 40px;
-		font-size: 16px;
 	}
 
 	.itemContent strong {
@@ -727,9 +670,7 @@
 		font-size: 11px;
 	}
 
-	.addBtn {
-		padding: 10px;
-		font-size: 13px;
-		margin-top: 10px;
+	.tourActions {
+		flex-direction: column;
 	}
 }

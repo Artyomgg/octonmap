@@ -1,3 +1,4 @@
+import { Check, Edit3, Trash2, X } from 'lucide-react' // 🔥 Импорт иконок
 import { useEffect, useState } from 'react'
 import EditPlaceModal from '../components/Admin/EditPlaceModal'
 import { useAuth } from '../context/AuthContext'
@@ -43,7 +44,7 @@ function PlacesTab() {
 	const [places, setPlaces] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [filter, setFilter] = useState('all')
-	const [editing, setEditing] = useState(null) // место, которое редактируем
+	const [editing, setEditing] = useState(null)
 
 	const load = () => {
 		setLoading(true)
@@ -118,19 +119,19 @@ function PlacesTab() {
 							<div className={styles.actions}>
 								{p.status !== 'approved' && (
 									<button className={styles.approve} onClick={() => moderate(p.id, 'approved')}>
-										✓ Одобрить
+										<Check size={14} /> Одобрить
 									</button>
 								)}
 								{p.status !== 'rejected' && (
 									<button className={styles.reject} onClick={() => moderate(p.id, 'rejected')}>
-										✕ Отклонить
+										<X size={14} /> Отклонить
 									</button>
 								)}
 								<button className={styles.edit} onClick={() => setEditing(p)}>
-									✎ Изменить
+									<Edit3 size={14} /> Изменить
 								</button>
 								<button className={styles.delete} onClick={() => remove(p.id, p.title)}>
-									🗑 Удалить
+									<Trash2 size={14} /> Удалить
 								</button>
 							</div>
 						</div>
@@ -185,41 +186,43 @@ function UsersTab({ currentUserId }) {
 				onChange={e => setSearch(e.target.value)}
 			/>
 
-			<table className={styles.table}>
-				<thead>
-					<tr>
-						<th>Email</th>
-						<th>Имя</th>
-						<th>Роль</th>
-						<th>Действие</th>
-					</tr>
-				</thead>
-				<tbody>
-					{filtered.map(p => (
-						<tr key={p.id}>
-							<td>{p.email}</td>
-							<td>{p.full_name || '—'}</td>
-							<td>
-								<span className={p.role === 'admin' ? styles.roleAdmin : styles.roleUser}>
-									{p.role === 'admin' ? 'Админ' : 'Пользователь'}
-								</span>
-							</td>
-							<td>
-								{p.id === currentUserId ? (
-									<span className={styles.self}>Это вы</span>
-								) : (
-									<button
-										className={p.role === 'admin' ? styles.reject : styles.approve}
-										onClick={() => toggleRole(p)}
-									>
-										{p.role === 'admin' ? 'Снять админа' : 'Сделать админом'}
-									</button>
-								)}
-							</td>
+			<div className={styles.tableWrap}>
+				<table className={styles.table}>
+					<thead>
+						<tr>
+							<th>Email</th>
+							<th>Имя</th>
+							<th>Роль</th>
+							<th>Действие</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{filtered.map(p => (
+							<tr key={p.id}>
+								<td>{p.email}</td>
+								<td>{p.full_name || '—'}</td>
+								<td>
+									<span className={p.role === 'admin' ? styles.roleAdmin : styles.roleUser}>
+										{p.role === 'admin' ? 'Админ' : 'Пользователь'}
+									</span>
+								</td>
+								<td>
+									{p.id === currentUserId ? (
+										<span className={styles.self}>Это вы</span>
+									) : (
+										<button
+											className={p.role === 'admin' ? styles.reject : styles.approve}
+											onClick={() => toggleRole(p)}
+										>
+											{p.role === 'admin' ? 'Снять админа' : 'Сделать админом'}
+										</button>
+									)}
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
 		</>
 	)
 }
