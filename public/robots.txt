@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /profile
+Disallow: /add
+Disallow: /login
+Disallow: /register
+
+Allow: /map
+Allow: /place/
+
+Sitemap: https://octonmap.vercel.app/sitemap.xml
