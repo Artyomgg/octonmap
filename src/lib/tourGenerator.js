@@ -1,5 +1,5 @@
 // ========== ПРОКСИ НА RENDER ==========
-const GROQ_URL = 'https://groq-api-3fdr.onrender.com/api/groq'
+const GROQ_URL = 'https://octonmap-api.onrender.com/api/groq'
 
 const MODEL = 'openai/gpt-oss-120b'
 
@@ -26,7 +26,7 @@ async function callGroq(systemPrompt, userPrompt, expectJson = true) {
 			{ role: 'user', content: userPrompt },
 		],
 		temperature: 0.3, // 🔥 понизили с 0.7 — модель строже следует инструкциям
-		max_tokens: 8000,
+		max_tokens: 4000,
 	}
 
 	if (expectJson) {
