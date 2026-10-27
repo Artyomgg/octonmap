@@ -26,7 +26,7 @@ async function callGroq(systemPrompt, userPrompt, expectJson = true) {
 			{ role: 'user', content: userPrompt },
 		],
 		temperature: 0.3, // 🔥 понизили с 0.7 — модель строже следует инструкциям
-		max_tokens: 4000,
+		max_tokens: 3000,
 	}
 
 	if (expectJson) {
