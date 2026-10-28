@@ -1,3 +1,4 @@
+import { BookOpen } from 'lucide-react' // 🔥 Иконка
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import styles from '../css/PlacePage.module.css'
@@ -10,22 +11,12 @@ export default function PlacePage() {
 	const [imgError, setImgError] = useState(false)
 
 	useEffect(() => {
-		console.log('🎬 [PlacePage] useEffect сработал, id из useParams =', id)
-		console.log('🎬 [PlacePage] тип id =', typeof id)
-
 		setImgError(false)
 		setLoading(true)
 		setPlace(null)
-
 		fetchPlaceById(id)
-			.then(data => {
-				console.log('✅ [PlacePage] Пришло в .then:', data)
-				console.log('✅ [PlacePage] photo_url в .then:', data?.photo_url)
-				setPlace(data)
-			})
-			.catch(err => {
-				console.error('❌ [PlacePage] Ошибка:', err)
-			})
+			.then(setPlace)
+			.catch(console.error)
 			.finally(() => setLoading(false))
 	}, [id])
 
@@ -55,8 +46,17 @@ export default function PlacePage() {
 			<span className={styles.badge}>{place.category}</span>
 
 			{place.address && <p className={styles.address}>📍 {place.address}</p>}
-
 			{place.description && <p className={styles.description}>{place.description}</p>}
+
+			{/* 🔥 ВЫВОД БАЗОВОГО ТЕКСТА */}
+			{place.base_script && (
+				<div className={styles.scriptBox}>
+					<h3 className={styles.scriptTitle}>
+						<BookOpen size={18} /> Материал для экскурсовода
+					</h3>
+					<p className={styles.scriptText}>{place.base_script}</p>
+				</div>
+			)}
 
 			<p className={styles.coords}>
 				Координаты: {place.lat.toFixed(5)}, {place.lng.toFixed(5)}

@@ -31,6 +31,7 @@ export default function EditPlaceModal({ place, onClose, onSaved }) {
 		lat: place.lat,
 		lng: place.lng,
 		photo_url: place.photo_url || '',
+		base_script: place.base_script || '', // 🔥 Новое поле
 	})
 	const [saving, setSaving] = useState(false)
 	const [error, setError] = useState('')
@@ -54,6 +55,7 @@ export default function EditPlaceModal({ place, onClose, onSaved }) {
 				lat: parseFloat(form.lat),
 				lng: parseFloat(form.lng),
 				photo_url: form.photo_url.trim() || null,
+				base_script: form.base_script.trim() || null, // 🔥 Сохраняем текст
 			})
 
 			onSaved?.()
@@ -144,7 +146,18 @@ export default function EditPlaceModal({ place, onClose, onSaved }) {
 							name='description'
 							value={form.description}
 							onChange={handleChange}
-							rows={4}
+							rows={3}
+						/>
+					</label>
+
+					{/* 🔥 НОВОЕ ПОЛЕ: Базовый текст */}
+					<label>
+						Базовый текст для экскурсии
+						<textarea
+							name='base_script'
+							value={form.base_script}
+							onChange={handleChange}
+							rows={5}
 						/>
 					</label>
 
@@ -155,7 +168,7 @@ export default function EditPlaceModal({ place, onClose, onSaved }) {
 							type='url'
 							value={form.photo_url}
 							onChange={handleChange}
-							placeholder='https://example.com/photo.jpg'
+							placeholder='https://...'
 						/>
 					</label>
 
@@ -164,12 +177,8 @@ export default function EditPlaceModal({ place, onClose, onSaved }) {
 							src={form.photo_url}
 							alt='preview'
 							className={styles.preview}
-							onError={e => {
-								e.target.style.display = 'none'
-							}}
-							onLoad={e => {
-								e.target.style.display = 'block'
-							}}
+							onError={e => (e.target.style.display = 'none')}
+							onLoad={e => (e.target.style.display = 'block')}
 						/>
 					)}
 

@@ -1,4 +1,4 @@
-import { Settings } from 'lucide-react'
+import { FlaskConical, Settings } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router'
 import { useAuth } from '../../context/AuthContext'
@@ -35,6 +35,13 @@ export default function Header() {
 
 					{user && (
 						<>
+							<NavLink
+								to='/guide-lab'
+								className={({ isActive }) => (isActive ? styles.active : '')}
+							>
+								<FlaskConical size={16} style={{ marginRight: 4 }} />
+								Лаборатория
+							</NavLink>
 							<NavLink to='/add' className={({ isActive }) => (isActive ? styles.active : '')}>
 								Добавить место
 							</NavLink>
@@ -107,6 +114,14 @@ export default function Header() {
 
 					{user && (
 						<>
+							<NavLink
+								to='/guide-lab'
+								onClick={closeMenu}
+								className={({ isActive }) => (isActive ? styles.mobileActive : styles.mobileLink)}
+							>
+								<FlaskConical size={18} style={{ marginRight: '8px' }} />
+								Лаборатория
+							</NavLink>
 							<NavLink
 								to='/add'
 								onClick={closeMenu}

@@ -3,6 +3,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute'
 import Header from './components/Header/Header'
 import { AuthProvider } from './context/AuthContext'
 
+import NotFound from './components/NotFound'
 import AddPlace from './pages/AddPlace'
 import AdminPage from './pages/AdminPage'
 import Home from './pages/Home'
@@ -11,7 +12,7 @@ import MapPage from './pages/MapPage'
 import PlacePage from './pages/PlacePage'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
-import NotFound from './components/NotFound'
+import GuideLab from './pages/GuideLab'
 
 export default function App() {
 	return (
@@ -50,7 +51,9 @@ export default function App() {
 						}
 					/>
 
-					<Route path='*' element={<NotFound/>} />
+					<Route path='/guide-lab' element={<GuideLab />} />
+
+					<Route path='*' element={<NotFound />} />
 				</Routes>
 			</main>
 		</AuthProvider>

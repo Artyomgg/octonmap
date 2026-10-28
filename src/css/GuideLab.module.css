@@ -1,0 +1,598 @@
+.page {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 50px 20px;
+	min-height: calc(100vh - 70px);
+	animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.header {
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+.header h1 {
+	font-size: 32px;
+	font-weight: 800;
+	color: #1b2a4a;
+	margin-bottom: 12px;
+	letter-spacing: -0.5px;
+}
+
+.header p {
+	color: #6b7a99;
+	font-size: 16px;
+	max-width: 650px;
+	margin: 0 auto;
+	line-height: 1.6;
+}
+
+.form {
+	background: #fff;
+	padding: 40px;
+	border-radius: 16px;
+	box-shadow: 0 10px 30px rgba(27, 42, 74, 0.08);
+	border: 1px solid #f0f4f9;
+}
+
+.form label {
+	display: block;
+	font-size: 14px;
+	font-weight: 600;
+	color: #1b2a4a;
+	margin-bottom: 24px;
+}
+
+.form input[type='text'],
+.form textarea {
+	width: 100%;
+	margin-top: 10px;
+	padding: 14px 16px;
+	border: 1.5px solid #e0e6f0;
+	border-radius: 10px;
+	font-size: 15px;
+	font-family: inherit;
+	color: #1b2a4a;
+	background: #fcfdfe;
+	transition: all 0.2s ease;
+	resize: vertical;
+}
+
+.form input[type='text']::placeholder,
+.form textarea::placeholder {
+	color: #a3b1c6;
+}
+
+.form input[type='text']:focus,
+.form textarea:focus {
+	outline: none;
+	border-color: #2a4a8a;
+	background: #fff;
+	box-shadow: 0 0 0 4px rgba(42, 74, 138, 0.1);
+}
+
+/* Блок с выбором мест */
+.placesBlock {
+	margin-top: 36px;
+	margin-bottom: 36px;
+	padding-top: 24px;
+	border-top: 1px dashed #e0e6f0;
+}
+
+.placesBlock h3 {
+	font-size: 16px;
+	font-weight: 700;
+	color: #1b2a4a;
+	margin-bottom: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.placesGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 12px;
+	max-height: 350px;
+	overflow-y: auto;
+	padding: 4px;
+	scrollbar-width: thin;
+	scrollbar-color: #cdd6e8 #f4f6fa;
+}
+
+.placesGrid::-webkit-scrollbar {
+	width: 6px;
+}
+
+.placesGrid::-webkit-scrollbar-track {
+	background: #f4f6fa;
+	border-radius: 4px;
+}
+
+.placesGrid::-webkit-scrollbar-thumb {
+	background: #cdd6e8;
+	border-radius: 4px;
+}
+
+.placeItem {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	padding: 16px;
+	border: 1.5px solid #e0e6f0;
+	border-radius: 12px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-bottom: 0;
+	background: #fff;
+	user-select: none;
+}
+
+.placeItem:hover {
+	border-color: #a3b1c6;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(27, 42, 74, 0.05);
+}
+
+.placeActive {
+	border-color: #ffcc00;
+	background: #fffbe8;
+	box-shadow: 0 4px 12px rgba(255, 204, 0, 0.15);
+}
+
+.placeActive:hover {
+	border-color: #ffcc00;
+}
+
+.placeItem input[type='checkbox'] {
+	width: 20px;
+	height: 20px;
+	margin-top: 2px;
+	accent-color: #1b2a4a;
+	cursor: pointer;
+	flex-shrink: 0;
+}
+
+.placeItem div {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+
+.placeItem strong {
+	font-size: 14px;
+	font-weight: 600;
+	color: #1b2a4a;
+	line-height: 1.3;
+}
+
+.placeItem span {
+	font-size: 12px;
+	font-weight: 500;
+	color: #6b7a99;
+	background: #f4f6fa;
+	padding: 2px 8px;
+	border-radius: 6px;
+	width: fit-content;
+	text-transform: capitalize;
+}
+
+/* Кнопка отправки */
+.submitBtn {
+	width: 100%;
+	padding: 16px;
+	background: linear-gradient(135deg, #1b2a4a 0%, #2a3c63 100%);
+	color: #fff;
+	border: none;
+	border-radius: 12px;
+	font-size: 16px;
+	font-weight: 700;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	transition: all 0.2s ease;
+	box-shadow: 0 4px 15px rgba(27, 42, 74, 0.2);
+}
+
+.submitBtn:hover:not(:disabled) {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(27, 42, 74, 0.3);
+}
+
+.submitBtn:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+	box-shadow: none;
+}
+
+/* Ошибки */
+.error {
+	background: #fff0f0;
+	color: #a30000;
+	padding: 16px;
+	border-radius: 10px;
+	margin-bottom: 24px;
+	font-size: 14px;
+	font-weight: 500;
+	border-left: 4px solid #a30000;
+	animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	25% {
+		transform: translateX(-5px);
+	}
+	75% {
+		transform: translateX(5px);
+	}
+}
+
+/* Экран успеха */
+.successBox {
+	text-align: center;
+	background: #fff;
+	padding: 60px 40px;
+	border-radius: 20px;
+	box-shadow: 0 10px 40px rgba(27, 42, 74, 0.08);
+	border: 1px solid #f0f4f9;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.successBox h2 {
+	color: #1b2a4a;
+	margin: 24px 0 12px;
+	font-size: 26px;
+	font-weight: 800;
+}
+
+.successBox p {
+	color: #6b7a99;
+	margin-bottom: 32px;
+	font-size: 15px;
+	line-height: 1.6;
+	max-width: 400px;
+}
+
+.btn {
+	background: #ffcc00;
+	color: #1b2a4a;
+	padding: 14px 28px;
+	border: none;
+	border-radius: 10px;
+	font-weight: 700;
+	font-size: 15px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	box-shadow: 0 4px 12px rgba(255, 204, 0, 0.3);
+}
+
+.btn:hover {
+	background: #ffd633;
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(255, 204, 0, 0.4);
+}
+
+/* Адаптив для мобилок */
+@media (max-width: 768px) {
+	.page {
+		padding: 30px 16px;
+	}
+
+	.header h1 {
+		font-size: 24px;
+	}
+
+	.form {
+		padding: 24px;
+	}
+
+	.placesGrid {
+		grid-template-columns: 1fr;
+		max-height: 250px;
+	}
+
+	.successBox {
+		padding: 40px 20px;
+	}
+}
+
+/* 🔥 Специальный стиль для поля Названия */
+.titleInput {
+	width: 100%;
+	margin-top: 10px;
+	padding: 18px 20px !important; /* Делаем поле выше */
+	border: 2px solid #e0e6f0 !important; /* Более толстая рамка */
+	border-radius: 12px !important;
+	font-size: 20px !important; /* Крупный текст */
+	font-weight: 700 !important; /* Жирный шрифт */
+	color: #1b2a4a !important;
+	background: #f8fafc !important;
+	transition: all 0.2s ease;
+}
+
+.titleInput::placeholder {
+	color: #a3b1c6 !important;
+	font-weight: 400 !important; /* Плейсхолдер не жирный */
+	font-size: 16px;
+}
+
+.titleInput:focus {
+	outline: none;
+	border-color: #2a4a8a !important;
+	background: #fff !important;
+	box-shadow: 0 0 0 4px rgba(42, 74, 138, 0.15) !important;
+}
+
+/* Чтобы на мобилке не было слишком огромным */
+@media (max-width: 768px) {
+	.titleInput {
+		font-size: 16px !important;
+		padding: 14px !important;
+	}
+}
+
+/* Контейнер для всех карточек */
+.placesGrid {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+/* Карточка места */
+.placeCard {
+	border: 1.5px solid #e0e6f0;
+	border-radius: 12px;
+	background: #fff;
+	transition: all 0.2s ease;
+	overflow: hidden;
+}
+
+.placeCardActive {
+	border-color: #ffcc00;
+	background: #fffbe8;
+}
+
+/* Шапка карточки (галочка + название) */
+.placeHeader {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	padding: 16px;
+	cursor: pointer;
+	margin-bottom: 0; /* Убираем отступ у label */
+}
+
+.placeHeader input[type='checkbox'] {
+	width: 20px;
+	height: 20px;
+	margin-top: 2px;
+	accent-color: #1b2a4a;
+	cursor: pointer;
+	flex-shrink: 0;
+}
+
+.placeHeader div {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.placeHeader strong {
+	font-size: 15px;
+	color: #1b2a4a;
+	line-height: 1.3;
+}
+
+.placeHeader span {
+	font-size: 12px;
+	color: #6b7a99;
+	background: #f4f6fa;
+	padding: 2px 8px;
+	border-radius: 6px;
+	width: fit-content;
+}
+
+/* Блок с текстом внутри карточки */
+.scriptArea {
+	padding: 0 16px 16px 50px; /* Отступ слева под галочку */
+	animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.scriptLabel {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #2a4a8a;
+	margin-bottom: 8px;
+}
+
+.scriptArea textarea {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #cdd6e8;
+	border-radius: 8px;
+	font-size: 14px;
+	font-family: inherit;
+	color: #1b2a4a;
+	resize: vertical;
+}
+
+.scriptArea textarea:focus {
+	outline: none;
+	border-color: #2a4a8a;
+	box-shadow: 0 0 0 3px rgba(42, 74, 138, 0.1);
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+	.scriptArea {
+		padding: 0 12px 12px 12px;
+	}
+}
+
+/* ... твои старые стили ... */
+
+/* Блок сформированного маршрута */
+.routeItem {
+	background: #fff;
+	border: 1px solid #e0e6f0;
+	border-radius: 10px;
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.routeHeader {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.routeNumber {
+	width: 28px;
+	height: 28px;
+	background: #1b2a4a;
+	color: #fff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 14px;
+	flex-shrink: 0;
+}
+
+.routeInfo {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.routeInfo strong {
+	font-size: 15px;
+	color: #1b2a4a;
+}
+
+.routeInfo span {
+	font-size: 12px;
+	color: #6b7a99;
+}
+
+.routeControls {
+	display: flex;
+	gap: 4px;
+}
+
+.moveBtn,
+.removeBtn {
+	width: 28px;
+	height: 28px;
+	border: 1px solid #cdd6e8;
+	background: #f9fafc;
+	border-radius: 6px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #4a5e85;
+}
+
+.moveBtn:disabled {
+	opacity: 0.3;
+	cursor: not-allowed;
+}
+
+.removeBtn {
+	color: #a30000;
+	border-color: #ffcccc;
+	background: #fff0f0;
+}
+
+.baseScriptBox {
+	background: #f4f6fa;
+	padding: 12px;
+	border-radius: 8px;
+	font-size: 13px;
+	color: #4a5e85;
+}
+
+.baseScriptBox p {
+	margin: 4px 0 0;
+	line-height: 1.5;
+}
+
+.toggleAltBtn {
+	background: transparent;
+	border: none;
+	color: #2a4a8a;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 0;
+	width: fit-content;
+}
+
+.altTextarea {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #cdd6e8;
+	border-radius: 8px;
+	font-size: 14px;
+	font-family: inherit;
+	background: #fffbe8;
+}
+
+.altTextarea:focus {
+	outline: none;
+	border-color: #ffcc00;
+	box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2);
+}

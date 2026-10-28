@@ -1,4 +1,4 @@
-import { BookOpen, FileDown, MapPin, Navigation, RotateCcw, Search, Sparkles } from 'lucide-react'
+import { BookOpen, FileDown, MapPin, Navigation, RotateCcw, Search } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import MapView from '../components/Map/MapView'
@@ -6,7 +6,7 @@ import TourModal from '../components/Tour/TourModal'
 import styles from '../css/MapPage.module.css'
 import { exportTourToDocx } from '../lib/exportTour'
 import { fetchApprovedPlaces } from '../lib/places'
-import { generateTour } from '../lib/tourGenerator'
+import { findMatchingProposal } from '../lib/tourGenerator'
 
 const CATEGORY_LABEL = {
 	all: 'Все категории',
@@ -68,7 +68,7 @@ export default function MapPage() {
 						className={mode === 'list' ? styles.tabActive : styles.tab}
 						onClick={() => setMode('list')}
 					>
-						<MapPin size={16} /> Все
+						<MapPin size={16} /> Все места
 					</button>
 					<button
 						className={mode === 'tour' ? styles.tabActive : styles.tab}
@@ -209,22 +209,29 @@ function TourMode({ places, mapRef, setActiveId }) {
 		setSelectedIds(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]))
 	}
 
-	const handleGenerate = async () => {
+	const handleSearchProposals = async () => {
 		setError('')
 		setTour(null)
 		setLoading(true)
+
 		try {
-			const result = await generateTour(places, theme, { count, selectedIds })
-			setTour(result)
-			if (result.stops[0]) {
-				setActiveId(result.stops[0].place.id)
-				mapRef.current?.flyTo([result.stops[0].place.lat, result.stops[0].place.lng], 14, {
-					duration: 1,
-				})
+			const match = await findMatchingProposal(places, theme, { count, selectedIds })
+			if (match) {
+				setTour(match)
+				if (match.stops[0]) {
+					setActiveId(match.stops[0].place.id)
+					mapRef.current?.flyTo([match.stops[0].place.lat, match.stops[0].place.lng], 14, {
+						duration: 1,
+					})
+				}
+			} else {
+				setError(
+					'Пока нет готовых маршрутов по этим критериям. Попробуйте изменить выбор или предложите свой маршрут в "Лаборатории".',
+				)
 			}
 		} catch (e) {
 			console.error(e)
-			setError(e.message || 'Ошибка генерации')
+			setError('Ошибка поиска')
 		} finally {
 			setLoading(false)
 		}
@@ -263,7 +270,7 @@ function TourMode({ places, mapRef, setActiveId }) {
 					</label>
 
 					<label className={styles.tourLabel}>
-						Сколько объектов в экскурсии
+						Сколько объектов
 						<select
 							value={count}
 							onChange={e => setCount(Number(e.target.value))}
@@ -277,10 +284,7 @@ function TourMode({ places, mapRef, setActiveId }) {
 						</select>
 					</label>
 
-					<div className={styles.selectHint}>
-						Отметьте места, которые обязательно должны быть в экскурсии (выбрано:{' '}
-						{selectedIds.length})
-					</div>
+					<div className={styles.selectHint}>Отметьте места (выбрано: {selectedIds.length})</div>
 
 					<ul className={styles.pickList}>
 						{places.map(p => (
@@ -298,22 +302,16 @@ function TourMode({ places, mapRef, setActiveId }) {
 						))}
 					</ul>
 
-					<button onClick={handleGenerate} disabled={loading} className={styles.buildBtn}>
+					<button onClick={handleSearchProposals} disabled={loading} className={styles.buildBtn}>
 						{loading ? (
-							'Нейросеть пишет тексты...'
+							'Поиск в базе...'
 						) : (
 							<>
-								<Sparkles size={18} style={{ marginRight: 8 }} />
-								Сгенерировать экскурсию
+								<Search size={18} style={{ marginRight: 8 }} />
+								Найти готовую экскурсию
 							</>
 						)}
 					</button>
-
-					{loading && (
-						<p className={styles.loadingHint}>
-							Это займёт 30-60 секунд — генерируем тексты на 4 минуты для каждой точки.
-						</p>
-					)}
 				</>
 			)}
 
@@ -322,33 +320,50 @@ function TourMode({ places, mapRef, setActiveId }) {
 			{tour && (
 				<>
 					<div className={styles.tourHeader}>
-						<h4>{tour.title}</h4>
+						{tour.isAuthor && (
+							<span
+								style={{
+									fontSize: '11px',
+									background: '#ffcc00',
+									color: '#1b2a4a',
+									padding: '2px 8px',
+									borderRadius: '4px',
+									fontWeight: 'bold',
+								}}
+							>
+								Авторский маршрут
+							</span>
+						)}
+						<h4 style={{ marginTop: '6px' }}>{tour.title}</h4>
 						{tour.intro && <p className={styles.tourIntro}>{tour.intro}</p>}
 					</div>
 
 					<button onClick={() => setModalOpen(true)} className={styles.showFullBtn}>
 						<BookOpen size={18} style={{ marginRight: 8 }} />
-						Показать полный текст экскурсии
+						Показать полный текст
 					</button>
 
 					<ol className={styles.tourList}>
-						{tour.stops.map((stop, i) => (
-							<li key={stop.place.id} className={styles.tourItem}>
-								<div
-									className={styles.tourItemHeader}
-									onClick={() => {
-										setActiveId(stop.place.id)
-										mapRef.current?.flyTo([stop.place.lat, stop.place.lng], 17, { duration: 0.8 })
-									}}
-								>
-									<span className={styles.tourIndex}>{i + 1}</span>
-									<div className={styles.tourItemBody}>
-										<strong>{stop.place.title}</strong>
-										{stop.comment && <span className={styles.tourComment}>{stop.comment}</span>}
+						{tour.stops.map((stop, i) => {
+							if (!stop || !stop.place) return null
+							return (
+								<li key={stop.place.id || i} className={styles.tourItem}>
+									<div
+										className={styles.tourItemHeader}
+										onClick={() => {
+											setActiveId(stop.place.id)
+											mapRef.current?.flyTo([stop.place.lat, stop.place.lng], 17, { duration: 0.8 })
+										}}
+									>
+										<span className={styles.tourIndex}>{i + 1}</span>
+										<div className={styles.tourItemBody}>
+											<strong>{stop.place.title}</strong>
+											{stop.comment && <span className={styles.tourComment}>{stop.comment}</span>}
+										</div>
 									</div>
-								</div>
-							</li>
-						))}
+								</li>
+							)
+						})}
 					</ol>
 
 					{tour.outro && <p className={styles.tourOutro}>{tour.outro}</p>}

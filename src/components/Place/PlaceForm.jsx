@@ -41,6 +41,7 @@ export default function PlaceForm({ onSuccess }) {
 		address: '',
 		category: 'памятник',
 		photo_url: '',
+		base_script: '', // 🔥 Новое поле
 	})
 	const [point, setPoint] = useState(null)
 	const [saving, setSaving] = useState(false)
@@ -125,6 +126,7 @@ export default function PlaceForm({ onSuccess }) {
 				address: form.address,
 				category: form.category,
 				photo_url: form.photo_url.trim() || null,
+				base_script: form.base_script.trim() || null, // 🔥 Передаем текст
 				lat: point.lat,
 				lng: point.lng,
 				author_id: user.id,
@@ -242,6 +244,18 @@ export default function PlaceForm({ onSuccess }) {
 						onChange={handleChange}
 						rows={3}
 						placeholder='История места...'
+					/>
+				</label>
+
+				{/* 🔥 НОВОЕ ПОЛЕ: Базовый текст для экскурсии */}
+				<label>
+					Базовый текст для экскурсии
+					<textarea
+						name='base_script'
+						value={form.base_script}
+						onChange={handleChange}
+						rows={4}
+						placeholder='Напишите базовый рассказ об этом месте для гидов...'
 					/>
 				</label>
 
