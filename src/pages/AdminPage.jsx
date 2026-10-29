@@ -1,6 +1,7 @@
-import { Check, Edit3, MapPin, Trash2, X } from 'lucide-react'
+import { Check, Edit3, Eye, Trash2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import EditPlaceModal from '../components/Admin/EditPlaceModal'
+import ViewProposalModal from '../components/Admin/ViewProposalModal'
 import { useAuth } from '../context/AuthContext'
 import styles from '../css/Admin.module.css'
 import {
@@ -125,28 +126,23 @@ function PlacesTab() {
 									</span>
 								</div>
 								{p.address && <p className={styles.addr}>{p.address}</p>}
-								{p.base_script && (
-									<p style={{ color: '#1a7a3a', fontSize: '12px', margin: '4px 0' }}>
-										✓ Есть текст экскурсии
-									</p>
-								)}
 							</div>
 							<div className={styles.actions}>
 								{p.status !== 'approved' && (
 									<button className={styles.approve} onClick={() => moderate(p.id, 'approved')}>
-										<Check size={14} /> Одобрить
+										<Check size={14} />
 									</button>
 								)}
 								{p.status !== 'rejected' && (
 									<button className={styles.reject} onClick={() => moderate(p.id, 'rejected')}>
-										<X size={14} /> Отклонить
+										<X size={14} />
 									</button>
 								)}
 								<button className={styles.edit} onClick={() => setEditing(p)}>
-									<Edit3 size={14} /> Изменить
+									<Edit3 size={14} />
 								</button>
 								<button className={styles.delete} onClick={() => remove(p.id, p.title)}>
-									<Trash2 size={14} /> Удалить
+									<Trash2 size={14} />
 								</button>
 							</div>
 						</div>
@@ -164,6 +160,7 @@ function ProposalsTab() {
 	const [proposals, setProposals] = useState([])
 	const [places, setPlaces] = useState([])
 	const [loading, setLoading] = useState(true)
+	const [viewingProposal, setViewingProposal] = useState(null)
 
 	const load = async () => {
 		setLoading(true)
@@ -186,6 +183,9 @@ function ProposalsTab() {
 		try {
 			await updateProposalStatus(id, status)
 			setProposals(prev => prev.map(p => (p.id === id ? { ...p, status } : p)))
+			if (viewingProposal && viewingProposal.id === id) {
+				setViewingProposal(prev => ({ ...prev, status }))
+			}
 		} catch (e) {
 			alert('Ошибка: ' + e.message)
 		}
@@ -195,108 +195,67 @@ function ProposalsTab() {
 	if (proposals.length === 0) return <p>Пока нет предложенных маршрутов.</p>
 
 	return (
-		<div className={styles.grid}>
-			{proposals.map(prop => {
-				const propPlaces = prop.route_ids.map(id => places.find(p => p.id === id)).filter(Boolean)
+		<>
+			<div className={styles.grid}>
+				{proposals.map(prop => {
+					const firstPlace = places.find(p => p.id === prop.route_ids[0])
 
-				return (
-					<div key={prop.id} className={styles.card} style={{ height: 'auto' }}>
-						<div className={styles.cardBody}>
-							<div className={styles.meta}>
-								<span className={`${styles.status} ${styles[prop.status]}`}>
-									{STATUS_LABEL[prop.status] || prop.status}
-								</span>
-								<span className={styles.addr}>Автор: {prop.author_id?.slice(0, 8)}...</span>
+					return (
+						<div key={prop.id} className={styles.card} style={{ height: 'auto' }}>
+							{firstPlace?.photo_url ? (
+								<img
+									src={firstPlace.photo_url}
+									alt={prop.title}
+									style={{ height: '140px', objectFit: 'cover' }}
+								/>
+							) : (
+								<div className={styles.noPhoto} style={{ height: '140px' }}>
+									Нет фото
+								</div>
+							)}
+
+							<div className={styles.cardBody}>
+								<div className={styles.meta}>
+									<span className={`${styles.status} ${styles[prop.status]}`}>
+										{STATUS_LABEL[prop.status] || prop.status}
+									</span>
+									<span className={styles.addr}>{prop.route_ids.length} точек</span>
+								</div>
+								<h3 style={{ marginTop: '10px', fontSize: '16px' }}>{prop.title}</h3>
 							</div>
 
-							<h3 style={{ marginTop: '10px' }}>{prop.title}</h3>
-							{prop.description && <p className={styles.desc}>{prop.description}</p>}
-
-							<div
-								style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}
-							>
-								{propPlaces.map(p => {
-									const customText = prop.custom_scripts?.[p.id]
-									return (
-										<div
-											key={p.id}
-											style={{
-												background: '#f9fafc',
-												padding: '12px',
-												borderRadius: '8px',
-												border: '1px solid #eef1f7',
-											}}
-										>
-											<strong
-												style={{
-													fontSize: '14px',
-													display: 'flex',
-													alignItems: 'center',
-													gap: '6px',
-													color: '#1b2a4a',
-												}}
-											>
-												<MapPin size={16} color='#2a4a8a' /> {p.title}
-											</strong>
-											{customText ? (
-												<div style={{ marginTop: '8px' }}>
-													<span
-														style={{
-															fontSize: '11px',
-															fontWeight: 600,
-															color: '#8a6500',
-															background: '#fff3cd',
-															padding: '2px 6px',
-															borderRadius: '4px',
-														}}
-													>
-														Альтернативный текст
-													</span>
-													<p
-														style={{
-															margin: '6px 0 0',
-															fontSize: '13px',
-															color: '#4a5e85',
-															lineHeight: '1.5',
-														}}
-													>
-														"{customText}"
-													</p>
-												</div>
-											) : (
-												<p
-													style={{
-														margin: '6px 0 0',
-														fontSize: '12px',
-														color: '#6b7a99',
-														fontStyle: 'italic',
-													}}
-												>
-													Используется базовый текст.
-												</p>
-											)}
-										</div>
-									)
-								})}
+							<div className={styles.actions} style={{ padding: '10px' }}>
+								<button
+									className={styles.edit}
+									onClick={() => setViewingProposal(prop)}
+									style={{ flex: 1, gap: '6px' }}
+								>
+									<Eye size={14} /> Посмотреть
+								</button>
+								{prop.status !== 'approved' && (
+									<button className={styles.approve} onClick={() => moderate(prop.id, 'approved')}>
+										<Check size={14} />
+									</button>
+								)}
+								{prop.status !== 'rejected' && (
+									<button className={styles.reject} onClick={() => moderate(prop.id, 'rejected')}>
+										<X size={14} />
+									</button>
+								)}
 							</div>
 						</div>
+					)
+				})}
+			</div>
 
-						<div className={styles.actions}>
-							{prop.status !== 'approved' && (
-								<button className={styles.approve} onClick={() => moderate(prop.id, 'approved')}>
-									<Check size={14} /> Одобрить
-								</button>
-							)}
-							{prop.status !== 'rejected' && (
-								<button className={styles.reject} onClick={() => moderate(prop.id, 'rejected')}>
-									<X size={14} /> Отклонить
-								</button>
-							)}
-						</div>
-					</div>
-				)
-			})}
-		</div>
+			{viewingProposal && (
+				<ViewProposalModal
+					proposal={viewingProposal}
+					places={places}
+					onClose={() => setViewingProposal(null)}
+				/>
+			)}
+		</>
 	)
 }
 
@@ -324,6 +283,7 @@ function UsersTab({ currentUserId }) {
 	}
 
 	if (loading) return <p>Загрузка...</p>
+
 	const filtered = profiles.filter(p => p.email?.toLowerCase().includes(search.toLowerCase()))
 
 	return (

@@ -135,3 +135,19 @@
 	background: #ffe0e0;
 	color: #a30000;
 }
+
+.editLink {
+	color: #2a4a8a;
+	display: flex;
+	align-items: center;
+	transition: 0.15s;
+}
+.editLink:hover {
+	color: #ffcc00;
+	transform: scale(1.1);
+}
+.sectionHeader h2 {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}

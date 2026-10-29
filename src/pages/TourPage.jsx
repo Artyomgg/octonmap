@@ -1,8 +1,9 @@
-import { BookOpen, Check, Copy, Share2 } from 'lucide-react'
+import { BookOpen, Check, Copy, FileDown, Share2 } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import styles from '../css/TourPage.module.css'
+import { exportTourToDocx } from '../lib/exportTour'
 import { fetchApprovedPlaces } from '../lib/places'
 import { supabase } from '../lib/supabase'
 
@@ -12,11 +13,11 @@ export default function TourPage() {
 	const [loading, setLoading] = useState(true)
 	const [copied, setCopied] = useState(false)
 	const [showQR, setShowQR] = useState(false)
+	const [exporting, setExporting] = useState(false)
 
 	useEffect(() => {
 		const loadData = async () => {
 			try {
-				// 1. Загружаем сам маршрут
 				const { data: proposal, error } = await supabase
 					.from('tour_proposals')
 					.select('*')
@@ -25,10 +26,7 @@ export default function TourPage() {
 
 				if (error || !proposal) throw new Error('Маршрут не найден')
 
-				// 2. Загружаем все места, чтобы расшифровать ID
 				const places = await fetchApprovedPlaces()
-
-				// 3. Формируем полные данные
 				const propPlaces = proposal.route_ids
 					.map(pid => places.find(p => p.id === pid))
 					.filter(Boolean)
@@ -59,6 +57,19 @@ export default function TourPage() {
 		setTimeout(() => setCopied(false), 2000)
 	}
 
+	const handleDownload = async () => {
+		if (!tour) return
+		setExporting(true)
+		try {
+			await exportTourToDocx(tour)
+		} catch (e) {
+			console.error(e)
+			alert('Ошибка экспорта: ' + e.message)
+		} finally {
+			setExporting(false)
+		}
+	}
+
 	if (loading) return <p className={styles.center}>Загрузка маршрута...</p>
 	if (!tour) return <p className={styles.center}>Маршрут не найден или еще не одобрен.</p>
 
@@ -66,8 +77,8 @@ export default function TourPage() {
 
 	return (
 		<div className={styles.page}>
-			<Link to='/map' className={styles.back}>
-				← Назад к карте
+			<Link to='/tours' className={styles.back}>
+				← Ко всем маршрутам
 			</Link>
 
 			<div className={styles.header}>
@@ -77,19 +88,33 @@ export default function TourPage() {
 
 				<div className={styles.shareBlock}>
 					<div className={styles.actions}>
-						<button onClick={handleCopyLink} className={styles.btn}>
-							{copied ? (
-								<>
-									<Check size={18} /> Ссылка скопирована
-								</>
+						<button
+							onClick={handleDownload}
+							disabled={exporting}
+							className={styles.btnPrimary}
+							style={{ background: '#1a7a3a' }}
+						>
+							{exporting ? (
+								'Готовим...'
 							) : (
 								<>
-									<Copy size={18} /> Скопировать ссылку
+									<FileDown size={18} /> Скачать .docx
 								</>
 							)}
 						</button>
-						<button onClick={() => setShowQR(!showQR)} className={styles.btnPrimary}>
-							<Share2 size={18} /> {showQR ? 'Скрыть QR-код' : 'Показать QR-код'}
+						<button onClick={handleCopyLink} className={styles.btn}>
+							{copied ? (
+								<>
+									<Check size={18} /> Скопировано
+								</>
+							) : (
+								<>
+									<Copy size={18} /> Ссылка
+								</>
+							)}
+						</button>
+						<button onClick={() => setShowQR(!showQR)} className={styles.btn}>
+							<Share2 size={18} /> {showQR ? 'Скрыть QR' : 'QR-код'}
 						</button>
 					</div>
 

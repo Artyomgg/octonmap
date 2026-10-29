@@ -32,6 +32,9 @@ export default function Header() {
 					<NavLink to='/map' className={({ isActive }) => (isActive ? styles.active : '')}>
 						Карта
 					</NavLink>
+					<NavLink to='/tours' className={({ isActive }) => (isActive ? styles.active : '')}>
+						Маршруты
+					</NavLink>
 
 					{user && (
 						<>
@@ -39,7 +42,6 @@ export default function Header() {
 								to='/guide-lab'
 								className={({ isActive }) => (isActive ? styles.active : '')}
 							>
-								<FlaskConical size={16} style={{ marginRight: 4 }} />
 								Лаборатория
 							</NavLink>
 							<NavLink to='/add' className={({ isActive }) => (isActive ? styles.active : '')}>
@@ -56,7 +58,6 @@ export default function Header() {
 							to='/admin'
 							className={({ isActive }) => `${styles.adminLink} ${isActive ? styles.active : ''}`}
 						>
-							<Settings size={16} />
 							<span>Админка</span>
 						</NavLink>
 					)}
@@ -111,6 +112,13 @@ export default function Header() {
 					>
 						Карта
 					</NavLink>
+					<NavLink
+						to='/tours'
+						onClick={closeMenu}
+						className={({ isActive }) => (isActive ? styles.mobileActive : styles.mobileLink)}
+					>
+						Маршруты
+					</NavLink>
 
 					{user && (
 						<>
@@ -119,8 +127,7 @@ export default function Header() {
 								onClick={closeMenu}
 								className={({ isActive }) => (isActive ? styles.mobileActive : styles.mobileLink)}
 							>
-								<FlaskConical size={18} style={{ marginRight: '8px' }} />
-								Лаборатория
+								<FlaskConical size={18} style={{ marginRight: '8px' }} /> Лаборатория
 							</NavLink>
 							<NavLink
 								to='/add'
@@ -145,8 +152,7 @@ export default function Header() {
 							onClick={closeMenu}
 							className={({ isActive }) => (isActive ? styles.mobileActive : styles.mobileLink)}
 						>
-							<Settings size={18} style={{ marginRight: '8px' }} />
-							Админка
+							<Settings size={18} style={{ marginRight: '8px' }} /> Админка
 						</NavLink>
 					)}
 				</nav>

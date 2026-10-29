@@ -6,14 +6,16 @@ import { AuthProvider } from './context/AuthContext'
 import NotFound from './components/NotFound'
 import AddPlace from './pages/AddPlace'
 import AdminPage from './pages/AdminPage'
+import GuideLab from './pages/GuideLab'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import MapPage from './pages/MapPage'
 import PlacePage from './pages/PlacePage'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
-import GuideLab from './pages/GuideLab'
 import TourPage from './pages/TourPage'
+import ToursPage from './pages/ToursPage'
+import EditTourPage from './pages/EditTourPage'
 
 export default function App() {
 	return (
@@ -55,6 +57,10 @@ export default function App() {
 					<Route path='/guide-lab' element={<GuideLab />} />
 
 					<Route path='/tour/:id' element={<TourPage />} />
+
+					<Route path='/tours' element={<ToursPage />} />
+
+					<Route path='/edit-tour/:id' element={<EditTourPage />} />
 
 					<Route path='*' element={<NotFound />} />
 				</Routes>
