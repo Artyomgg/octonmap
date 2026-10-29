@@ -1,4 +1,4 @@
-import { BookOpen, FileDown, MapPin, Navigation, RotateCcw, Search } from 'lucide-react'
+import { BookOpen, FileDown, MapPin, Navigation, RotateCcw, Search, Share2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import MapView from '../components/Map/MapView'
@@ -337,6 +337,23 @@ function TourMode({ places, mapRef, setActiveId }) {
 						<h4 style={{ marginTop: '6px' }}>{tour.title}</h4>
 						{tour.intro && <p className={styles.tourIntro}>{tour.intro}</p>}
 					</div>
+
+					{/* 🔥 Кнопка перехода на страницу маршрута для QR-кода */}
+					<Link
+						to={`/tour/${tour.id}`}
+						className={styles.showFullBtn}
+						style={{
+							background: '#fff',
+							color: '#2a4a8a',
+							border: '1px solid #cdd6e8',
+							boxShadow: 'none',
+							marginTop: 0,
+							marginBottom: '12px',
+						}}
+					>
+						<Share2 size={18} style={{ marginRight: 8 }} />
+						Поделиться маршрутом / QR-код
+					</Link>
 
 					<button onClick={() => setModalOpen(true)} className={styles.showFullBtn}>
 						<BookOpen size={18} style={{ marginRight: 8 }} />

@@ -17,10 +17,10 @@ export async function findMatchingProposal(places, theme, options) {
 	let maxMatches = 0
 
 	proposals.forEach(prop => {
-		// Считаем, сколько выбранных пользователем точек есть в этом маршруте
-		// Если пользователь ничего не выбрал, то подойдет любой маршрут нужной длины
-		const matches =
-			selectedIds.length === 0 ? 1 : prop.route_ids.filter(id => selectedIds.includes(id)).length
+		// Если пользователь ничего не выбрал, берем любой маршрут нужной длины
+		const matches = selectedIds.length === 0 
+			? 1 
+			: prop.route_ids.filter(id => selectedIds.includes(id)).length
 
 		// Если совпадений больше, чем у предыдущего лучшего (и хотя бы одно), запоминаем
 		if (
@@ -51,6 +51,7 @@ export async function findMatchingProposal(places, theme, options) {
 	})
 
 	return {
+		id: bestMatch.id, // 🔥 ВАЖНО: ID для перехода на страницу
 		title: bestMatch.title,
 		intro: bestMatch.description || 'Авторский маршрут от гида.',
 		stops: stops,

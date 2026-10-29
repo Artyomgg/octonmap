@@ -13,6 +13,7 @@ import PlacePage from './pages/PlacePage'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
 import GuideLab from './pages/GuideLab'
+import TourPage from './pages/TourPage'
 
 export default function App() {
 	return (
@@ -52,6 +53,8 @@ export default function App() {
 					/>
 
 					<Route path='/guide-lab' element={<GuideLab />} />
+
+					<Route path='/tour/:id' element={<TourPage />} />
 
 					<Route path='*' element={<NotFound />} />
 				</Routes>
