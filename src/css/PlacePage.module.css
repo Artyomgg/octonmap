@@ -123,3 +123,61 @@
 	color: #4a5e85;
 	white-space: pre-line;
 }
+
+/* Блок с кнопками */
+.shareBlock {
+	display: flex;
+	gap: 10px;
+	margin: 20px 0;
+	flex-wrap: wrap;
+}
+
+.shareBtn {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	background: #eef1f7;
+	color: #1b2a4a;
+	border: none;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: 0.2s;
+}
+
+.shareBtn:hover {
+	background: #e0e6f0;
+}
+
+/* Контейнер для QR-кода */
+.qrBox {
+	background: #f9fafc;
+	padding: 20px;
+	border-radius: 12px;
+	border: 1px dashed #cdd6e8;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 20px;
+}
+
+.qrBox p {
+	margin: 0;
+	font-size: 13px;
+	color: #6b7a99;
+	text-align: center;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+	.shareBlock {
+		flex-direction: column;
+	}
+	.shareBtn {
+		width: 100%;
+		justify-content: center;
+	}
+}

@@ -1,6 +1,7 @@
-import { BookOpen } from 'lucide-react' // 🔥 Иконка
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
+import { QRCodeSVG } from 'qrcode.react' // 🔥 Импорт QR-кода
+import { BookOpen, Copy, Check, Share2 } from 'lucide-react' // 🔥 Иконки
 import styles from '../css/PlacePage.module.css'
 import { fetchPlaceById } from '../lib/places'
 
@@ -9,6 +10,10 @@ export default function PlacePage() {
 	const [place, setPlace] = useState(null)
 	const [loading, setLoading] = useState(true)
 	const [imgError, setImgError] = useState(false)
+
+	// Стейты для кнопок
+	const [copied, setCopied] = useState(false)
+	const [showQR, setShowQR] = useState(false)
 
 	useEffect(() => {
 		setImgError(false)
@@ -20,10 +25,17 @@ export default function PlacePage() {
 			.finally(() => setLoading(false))
 	}, [id])
 
+	const handleCopyLink = () => {
+		navigator.clipboard.writeText(window.location.href)
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
+	}
+
 	if (loading) return <p className={styles.loading}>Загрузка...</p>
 	if (!place) return <p className={styles.loading}>Место не найдено</p>
 
 	const hasPhoto = place.photo_url && place.photo_url.trim() && !imgError
+	const pageUrl = window.location.href
 
 	return (
 		<article className={styles.page}>
@@ -46,6 +58,33 @@ export default function PlacePage() {
 			<span className={styles.badge}>{place.category}</span>
 
 			{place.address && <p className={styles.address}>📍 {place.address}</p>}
+
+			{/* 🔥 БЛОК С КНОПКАМИ ПОДЕЛИТЬСЯ */}
+			<div className={styles.shareBlock}>
+				<button onClick={handleCopyLink} className={styles.shareBtn}>
+					{copied ? (
+						<>
+							<Check size={18} /> Скопировано
+						</>
+					) : (
+						<>
+							<Copy size={18} /> Скопировать ссылку
+						</>
+					)}
+				</button>
+				<button onClick={() => setShowQR(!showQR)} className={styles.shareBtn}>
+					<Share2 size={18} /> {showQR ? 'Скрыть QR' : 'Показать QR-код'}
+				</button>
+			</div>
+
+			{/* Сам QR-код */}
+			{showQR && (
+				<div className={styles.qrBox}>
+					<QRCodeSVG value={pageUrl} size={180} bgColor='#ffffff' fgColor='#1b2a4a' level='H' />
+					<p>Наведите камеру телефона, чтобы открыть эту страницу</p>
+				</div>
+			)}
+
 			{place.description && <p className={styles.description}>{place.description}</p>}
 
 			{/* 🔥 ВЫВОД БАЗОВОГО ТЕКСТА */}
