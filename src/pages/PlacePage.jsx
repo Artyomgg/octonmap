@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { BookOpen, Check, Copy, Download, Share2 } from 'lucide-react' // 🔥 Добавили Download
+import { QRCodeSVG } from 'qrcode.react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router'
-import { QRCodeSVG } from 'qrcode.react' // 🔥 Импорт QR-кода
-import { BookOpen, Copy, Check, Share2 } from 'lucide-react' // 🔥 Иконки
 import styles from '../css/PlacePage.module.css'
 import { fetchPlaceById } from '../lib/places'
 
@@ -11,9 +11,11 @@ export default function PlacePage() {
 	const [loading, setLoading] = useState(true)
 	const [imgError, setImgError] = useState(false)
 
-	// Стейты для кнопок
 	const [copied, setCopied] = useState(false)
 	const [showQR, setShowQR] = useState(false)
+
+	// Ссылка на блок с QR-кодом, чтобы его скачать
+	const qrRef = useRef(null)
 
 	useEffect(() => {
 		setImgError(false)
@@ -29,6 +31,36 @@ export default function PlacePage() {
 		navigator.clipboard.writeText(window.location.href)
 		setCopied(true)
 		setTimeout(() => setCopied(false), 2000)
+	}
+
+	// 🔥 ФУНКЦИЯ СКАЧИВАНИЯ QR-КОДА
+	const downloadQR = () => {
+		const svg = qrRef.current.querySelector('svg')
+		if (!svg) return
+
+		const canvas = document.createElement('canvas')
+		const ctx = canvas.getContext('2d')
+		const svgData = new XMLSerializer().serializeToString(svg)
+		const img = new Image()
+
+		img.onload = () => {
+			canvas.width = 500
+			canvas.height = 500
+			// Заливаем белым фоном (чтобы не было прозрачности)
+			ctx.fillStyle = '#ffffff'
+			ctx.fillRect(0, 0, canvas.width, canvas.height)
+			// Рисуем QR
+			ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+			// Скачиваем
+			const pngFile = canvas.toDataURL('image/png')
+			const downloadLink = document.createElement('a')
+			downloadLink.download = `QR-${place.title}.png`
+			downloadLink.href = pngFile
+			downloadLink.click()
+		}
+
+		img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)))
 	}
 
 	if (loading) return <p className={styles.loading}>Загрузка...</p>
@@ -59,7 +91,7 @@ export default function PlacePage() {
 
 			{place.address && <p className={styles.address}>📍 {place.address}</p>}
 
-			{/* 🔥 БЛОК С КНОПКАМИ ПОДЕЛИТЬСЯ */}
+			{/* Блок кнопок */}
 			<div className={styles.shareBlock}>
 				<button onClick={handleCopyLink} className={styles.shareBtn}>
 					{copied ? (
@@ -77,17 +109,30 @@ export default function PlacePage() {
 				</button>
 			</div>
 
-			{/* Сам QR-код */}
+			{/* Блок с QR-кодом */}
 			{showQR && (
 				<div className={styles.qrBox}>
-					<QRCodeSVG value={pageUrl} size={180} bgColor='#ffffff' fgColor='#1b2a4a' level='H' />
-					<p>Наведите камеру телефона, чтобы открыть эту страницу</p>
+					<div ref={qrRef} className={styles.qrImageWrapper}>
+						<QRCodeSVG
+							value={pageUrl}
+							size={200}
+							bgColor='#ffffff'
+							fgColor='#1b2a4a'
+							level='H'
+							includeMargin={true}
+						/>
+					</div>
+					<p>Наведите камеру, чтобы открыть страницу</p>
+
+					{/* 🔥 Кнопка скачивания */}
+					<button onClick={downloadQR} className={styles.downloadQrBtn}>
+						<Download size={16} /> Скачать QR-код
+					</button>
 				</div>
 			)}
 
 			{place.description && <p className={styles.description}>{place.description}</p>}
 
-			{/* 🔥 ВЫВОД БАЗОВОГО ТЕКСТА */}
 			{place.base_script && (
 				<div className={styles.scriptBox}>
 					<h3 className={styles.scriptTitle}>

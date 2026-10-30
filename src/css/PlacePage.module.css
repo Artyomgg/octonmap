@@ -181,3 +181,35 @@
 		justify-content: center;
 	}
 }
+
+/* Обертка для SVG (чтобы красиво легло) */
+.qrImageWrapper {
+	background: #fff;
+	padding: 10px;
+	border-radius: 12px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Кнопка скачивания QR */
+.downloadQrBtn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 16px;
+	padding: 10px 20px;
+	background: #1b2a4a;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.2s;
+	width: 100%;
+	max-width: 250px;
+}
+
+.downloadQrBtn:hover {
+	background: #2a3c63;
+}

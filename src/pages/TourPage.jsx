@@ -1,6 +1,6 @@
-import { BookOpen, Check, Copy, FileDown, Share2 } from 'lucide-react'
+import { BookOpen, Check, Copy, Download, FileDown, Share2 } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import styles from '../css/TourPage.module.css'
 import { exportTourToDocx } from '../lib/exportTour'
@@ -14,6 +14,9 @@ export default function TourPage() {
 	const [copied, setCopied] = useState(false)
 	const [showQR, setShowQR] = useState(false)
 	const [exporting, setExporting] = useState(false)
+
+	// Ссылка на QR-код для скачивания
+	const qrRef = useRef(null)
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -70,6 +73,33 @@ export default function TourPage() {
 		}
 	}
 
+	// 🔥 ФУНКЦИЯ СКАЧИВАНИЯ QR-КОДА
+	const downloadQR = () => {
+		const svg = qrRef.current.querySelector('svg')
+		if (!svg) return
+
+		const canvas = document.createElement('canvas')
+		const ctx = canvas.getContext('2d')
+		const svgData = new XMLSerializer().serializeToString(svg)
+		const img = new Image()
+
+		img.onload = () => {
+			canvas.width = 500
+			canvas.height = 500
+			ctx.fillStyle = '#ffffff'
+			ctx.fillRect(0, 0, canvas.width, canvas.height)
+			ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+			const pngFile = canvas.toDataURL('image/png')
+			const downloadLink = document.createElement('a')
+			downloadLink.download = `QR-Маршрут-${tour.title}.png`
+			downloadLink.href = pngFile
+			downloadLink.click()
+		}
+
+		img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)))
+	}
+
 	if (loading) return <p className={styles.center}>Загрузка маршрута...</p>
 	if (!tour) return <p className={styles.center}>Маршрут не найден или еще не одобрен.</p>
 
@@ -118,10 +148,27 @@ export default function TourPage() {
 						</button>
 					</div>
 
+					{/* 🔥 Блок с QR-кодом и кнопкой скачивания */}
 					{showQR && (
 						<div className={styles.qrBox}>
-							<QRCodeSVG value={tourUrl} size={180} bgColor='#ffffff' fgColor='#1b2a4a' level='H' />
+							<div
+								ref={qrRef}
+								style={{ background: '#fff', padding: '10px', borderRadius: '12px' }}
+							>
+								<QRCodeSVG
+									value={tourUrl}
+									size={200}
+									bgColor='#ffffff'
+									fgColor='#1b2a4a'
+									level='H'
+									includeMargin={true}
+								/>
+							</div>
 							<p>Наведите камеру телефона, чтобы открыть этот маршрут</p>
+
+							<button onClick={downloadQR} className={styles.downloadQrBtn}>
+								<Download size={16} /> Скачать QR-код
+							</button>
 						</div>
 					)}
 				</div>
