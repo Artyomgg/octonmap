@@ -127,7 +127,7 @@ export default function Header() {
 								onClick={closeMenu}
 								className={({ isActive }) => (isActive ? styles.mobileActive : styles.mobileLink)}
 							>
-								<FlaskConical size={18} style={{ marginRight: '8px' }} /> Лаборатория
+							Лаборатория
 							</NavLink>
 							<NavLink
 								to='/add'
@@ -152,7 +152,7 @@ export default function Header() {
 							onClick={closeMenu}
 							className={({ isActive }) => (isActive ? styles.mobileActive : styles.mobileLink)}
 						>
-							<Settings size={18} style={{ marginRight: '8px' }} /> Админка
+							Админка
 						</NavLink>
 					)}
 				</nav>
